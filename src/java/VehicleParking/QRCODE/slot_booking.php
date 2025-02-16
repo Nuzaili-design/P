@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'vendor/autoload.php'; // Load necessary libraries
-require 'SQLconnection.php'; // Your database connection file
+require 'db_connect.php'; // Your database connection file
 require 'QRGen.php'; // Your QR Code generation file
 
 use Zxing\QrReader;
