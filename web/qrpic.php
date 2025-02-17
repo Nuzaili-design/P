@@ -1,36 +1,27 @@
 <?php
-include 'db_connect.php'; // Use the correct database connection file
+require 'db_connect.php'; // Ensure database connection
 
-$uid = isset($_GET['uid']) ? $_GET['uid'] : '';
+$conn = SQLConnection::getConnection();
 
-if (empty($uid)) {
-    die("❌ Error: Missing UID parameter.");
+if (!isset($_GET['uid']) || !is_numeric($_GET['uid'])) {
+    die("❌ Invalid UID");
 }
 
-try {
-    $con = SQLConnection::getConnection(); // Get the database connection
+$uid = intval($_GET['uid']);
 
-    // Prepare and execute query using PDO
-    $stmt = $con->prepare("SELECT image_data FROM slot_booking WHERE id = :uid");
-    $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
-    $stmt->execute();
+// Fetch QR Code from database
+$query = "SELECT image_data FROM slot_booking WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bindParam(1, $uid, PDO::PARAM_INT);
+$stmt->execute();
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->rowCount() > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $imageData = $row['image_data'];
-
-        if (!empty($imageData)) {
-            // Serve the image as a PNG
-            header("Content-Type: image/png");
-            echo $imageData;
-            exit; // Ensure no extra output
-        } else {
-            die("❌ Error: No QR code found for this UID.");
-        }
-    } else {
-        die("❌ Error: No matching record found.");
-    }
-} catch (PDOException $e) {
-    die("❌ Database Error: " . $e->getMessage());
+if (!$result || empty($result['image_data'])) {
+    die("❌ Error: No matching record found.");
 }
+
+// Output the image
+header("Content-Type: image/png");
+echo $result['image_data'];
 ?>
+

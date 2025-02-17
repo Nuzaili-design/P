@@ -191,7 +191,8 @@ function formatTimeAMPM($time) {
 </html>
 
 <?php
-$stmt->close();
-$conn->close();
+$stmt = null; // Close the statement
+$conn = null; // Close the connection
+
 ?>
  

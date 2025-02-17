@@ -106,7 +106,10 @@ $endtime = formatTimeAMPM($booking['endtime']);
                 <!-- QR Code -->
                 <div class="qr-code">
                     
-                    <img src="qrpic.php?uid=<?= $uid; ?>" alt="QR Code" width="150">
+                    
+                    
+                    <img src="qrpic.php?uid=<?= htmlspecialchars($uid); ?>" alt="QR Code" width="150" onerror="console.error('QR Code failed to load! Check qrpic.php')">
+
 
                 </div>
             </div>
@@ -127,7 +130,8 @@ $endtime = formatTimeAMPM($booking['endtime']);
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
     <script>
         const contentDiv = document.getElementById('content');
