@@ -14,8 +14,10 @@
         "qrcodes",
         "qrlib",
         "qrpic",
+        "reqid",
         "tempusdominus",
         "umail",
+        "xampp",
         "Zxing"
     ]
 }

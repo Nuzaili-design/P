@@ -24,24 +24,29 @@ while ($row = $cost_result->fetch(PDO::FETCH_ASSOC)) {
 $selected_date = $_SESSION['selected_date'] ?? '';
 $selected_time = $_SESSION['selected_time'] ?? '';
 $selected_hours = $_SESSION['selected_hours'] ?? '';
-$hourly_cost = $costs[1] ?? 0; // Get the cost for 1 hour
-$parking_cost = $selected_hours * $hourly_cost; // Multiply by selected hours
 
+$hourly_cost = $costs[1] ?? 0; // Get cost per hour
+$parking_cost = $selected_hours * $hourly_cost; // Total cost
 $endtime = date("H:i", strtotime("+$selected_hours hours", strtotime($selected_time)));
 
-// Fetch booked slots and ensure availability based on time overlap
-$booked_slots = [];
-$booking_query = "SELECT slot_name, stime, endtime FROM slot_booking WHERE pdate = :pdate";
+// Fetch booked slots with proper time conflict check
+$booking_query = "SELECT slot_name FROM slot_booking 
+                  WHERE pdate = :pdate 
+                  AND slot_name = :slot_name
+                  AND (
+                      (:selected_time >= stime AND :selected_time < endtime) 
+                      OR 
+                      (:endtime > stime AND :endtime <= endtime)
+                      OR
+                      (stime >= :selected_time AND stime < :endtime)
+                  )";
+
 $stmt = $conn->prepare($booking_query);
 $stmt->bindParam(':pdate', $selected_date);
+$stmt->bindParam(':selected_time', $selected_time);
+$stmt->bindParam(':endtime', $endtime);
 $stmt->execute();
-$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-foreach ($bookings as $booking) {
-    if (($selected_time < $booking['endtime']) && ($endtime > $booking['stime'])) {
-        $booked_slots[] = $booking['slot_name']; // Mark slot as booked if it overlaps
-    }
-}
+$booked_slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -53,12 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phrs = $_POST['phrs'] ?? 0;
     $endtime = date("H:i", strtotime("+$phrs hours", strtotime($stime)));
 
+    // Recalculate parking cost
+    $parking_cost = $phrs * $hourly_cost;
+
     foreach ($selected_slots as $slot) {
-        // Check if slot is already booked for overlapping time
+        // Check if the slot is already booked for the selected time
         $checkQuery = "SELECT * FROM slot_booking 
                        WHERE slot_name = :slot_name 
                        AND pdate = :pdate 
                        AND (stime < :endtime AND endtime > :stime)";
+
         $stmt = $conn->prepare($checkQuery);
         $stmt->bindParam(':slot_name', $slot);
         $stmt->bindParam(':pdate', $pdate);
@@ -71,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             continue;
         }
 
-        // Insert into database
+        // Insert the booking into the database
         $insert_query = $conn->prepare("
             INSERT INTO slot_booking (uname, uid, pdate, stime, phrs, umail, slot_name, time, endtime, pcost, ustatus)
             VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, :stime, :endtime, :pcost, 'No')

@@ -1,82 +1,89 @@
 <?php
-
-require 'phpqrcode.php'; // Include the phpqrcode library
-require 'db_connect.php'; // Include database connection
+require 'C:/xampp/htdocs/QRBasedVehicleParking/phpqrcode/phpqrcode.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/QRBasedVehicleParking/web/db_connect.php'; // Database connection
 
 class QRGen {
     // Function to create the QR code
     public static function createQR($data, $path, $size = 5) {
         // Ensure the directory exists
         $dir = dirname($path);
-        if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
+        if (!file_exists($dir) && !mkdir($dir, 0777, true)) {
+            die("❌ Error: Failed to create QR code directory!");
         }
 
         // Generate and save the QR Code
         QRcode::png($data, $path, QR_ECLEVEL_L, $size);
     }
 
-    // Function to store QR Code in Database
+    // Function to store QR Code path in Database
     public static function storeQRInDB($uid, $qrPath) {
         try {
             $con = SQLConnection::getConnection();
 
+            // Ensure QR file exists
             if (!file_exists($qrPath)) {
                 return "❌ QR Code file not found at: " . htmlspecialchars($qrPath);
             }
 
-            // Read QR image as binary data
-            $imageData = file_get_contents($qrPath);
-            if ($imageData === false) {
-                return "❌ Failed to read QR Code image file!";
-            }
+            // Store the QR Code path in the database
+            $stmt = $con->prepare("UPDATE slot_booking SET qr_image_path = ? WHERE uid = ?");
+            $stmt->execute([$qrPath, $uid]);
 
-            // Store the QR Code in the database
-            $stmt = $con->prepare("UPDATE slot_booking SET image_data = ? WHERE id = ?");
-            $stmt->bindParam(1, $imageData, PDO::PARAM_LOB);
-            $stmt->bindParam(2, $uid, PDO::PARAM_INT);
-            $stmt->execute();
-
-            return ($stmt->rowCount() > 0) ? "✅ QR Code stored in database!" : "❌ No rows updated! Check if the UID exists.";
+            return ($stmt->rowCount() > 0) ? "✅ QR Code stored in database!" : "❌ No rows updated!";
         } catch (PDOException $e) {
             return "❌ Database Error: " . $e->getMessage();
         }
     }
 }
 
-// Handle QR Code Generation
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $data = htmlspecialchars($_POST['data'] ?? 'Default QR Data'); // Prevent XSS
-    $uid = intval($_POST['uid'] ?? 0); // Ensure ID is an integer
+// Automatically generate QR code for the user
+if (isset($_GET['uid'])) {
+    $uid = intval($_GET['uid']); // Ensure ID is an integer
 
-    if ($uid <= 0) {
-        die("❌ Invalid UID!");
+    try {
+        $conn = SQLConnection::getConnection();
+
+        // Fetch booking details
+        $stmt = $conn->prepare("SELECT uid, uname, slot_name, date, time, cost FROM slot_booking WHERE uid = ?");
+        $stmt->execute([$uid]);
+        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$booking) {
+            die("❌ No booking found for UID: " . htmlspecialchars($uid));
+        }
+
+        // QR code data (booking details)
+        $qrData = json_encode([
+            'UID' => $booking['uid'],
+            'Name' => $booking['uname'],
+            'Slot' => $booking['slot_name'],
+            'Date' => $booking['date'],
+            'Time' => $booking['time'],
+            'Cost' => $booking['cost']
+        ]);
+
+        // Ensure QR code directory exists
+        $qrDirectory = $_SERVER['DOCUMENT_ROOT'] . "/QRBasedVehicleParking/qrcodes/";
+        if (!is_dir($qrDirectory) && !mkdir($qrDirectory, 0777, true)) {
+            die("❌ Error: Failed to create QR codes directory!");
+        }
+
+        $fileName = $qrDirectory . "qr_" . $uid . ".png"; // Unique filename for each UID
+
+        // Generate QR Code
+        QRGen::createQR($qrData, $fileName);
+
+        // Store QR path in DB
+        $storeResult = QRGen::storeQRInDB($uid, "/QRBasedVehicleParking/qrcodes/qr_$uid.png");
+
+        // Output the QR code for preview
+        echo "<h3>✅ QR Code Generated for " . htmlspecialchars($booking['uname']) . "</h3>";
+        echo "<img src='/QRBasedVehicleParking/qrcodes/qr_$uid.png' width='200'>";
+        echo "<br>" . $storeResult;
+    } catch (PDOException $ex) {
+        die("❌ Database Error: " . $ex->getMessage());
     }
-
-    // Ensure QR code directory exists
-    $qrDirectory = "qrcodes/";
-    if (!is_dir($qrDirectory) && !mkdir($qrDirectory, 0777, true)) {
-        die("❌ Error: Failed to create QR codes directory!");
-    }
-
-    $fileName = $qrDirectory . "qr_" . $uid . ".png"; // Unique filename for each UID
-
-    // Generate QR Code
-    QRGen::createQR($data, $fileName);
-
-    // Store QR in DB
-    $storeResult = QRGen::storeQRInDB($uid, $fileName);
-
-    // Output result
-    echo "QR Code generated successfully: <a href='$fileName' target='_blank'><img src='$fileName' width='200'></a>";
-    echo "<br>" . $storeResult;
+} else {
+    die("❌ Error: UID is required to generate QR code.");
 }
 ?>
-
-<!-- HTML Form for Testing -->
-<form method="POST">
-    <label>Enter Data for QR Code:</label>
-    <input type="text" name="data" required>
-    <input type="number" name="uid" placeholder="Enter UID" required>
-    <button type="submit">Generate QR</button>
-</form>
