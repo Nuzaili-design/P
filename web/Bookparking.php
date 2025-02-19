@@ -29,23 +29,16 @@ $hourly_cost = $costs[1] ?? 0; // Get cost per hour
 $parking_cost = $selected_hours * $hourly_cost; // Total cost
 $endtime = date("H:i", strtotime("+$selected_hours hours", strtotime($selected_time)));
 
-// Fetch booked slots with time conflict check
-$booked_slots = [];
+// Fetch booked slots with correct time conflict check
 $booking_query = "SELECT slot_name FROM slot_booking 
                   WHERE pdate = :pdate 
-                  AND slot_name = :slot_name
                   AND (
-                      (:selected_time >= stime AND :selected_time < endtime) 
-                      OR 
-                      (:endtime > stime AND :endtime <= endtime)
-                      OR
-                      (stime >= :selected_time AND stime < :endtime)
+                      (stime < :endtime AND endtime > :stime) -- Check overlapping bookings
                   )";
-
 
 $stmt = $conn->prepare($booking_query);
 $stmt->bindParam(':pdate', $selected_date);
-$stmt->bindParam(':selected_time', $selected_time);
+$stmt->bindParam(':stime', $selected_time);
 $stmt->bindParam(':endtime', $endtime);
 $stmt->execute();
 $booked_slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -65,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     foreach ($selected_slots as $slot) {
         // Check if the slot is already booked for the selected time
-        $checkQuery = "SELECT * FROM slot_booking 
+        $checkQuery = "SELECT COUNT(*) FROM slot_booking 
                        WHERE slot_name = :slot_name 
                        AND pdate = :pdate 
                        AND (stime < :endtime AND endtime > :stime)";
@@ -77,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':endtime', $endtime);
         $stmt->execute();
 
-        if ($stmt->rowCount() > 0) {
+        if ($stmt->fetchColumn() > 0) {
             echo "<script>alert('Slot $slot is already booked for this time!');</script>";
             continue;
         }
@@ -161,9 +154,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         for ($i = 1; $i <= 10; $i++) {
                             $slot = "Slot $i";
                             $disabled = in_array($slot, $booked_slots) ? 'disabled' : '';
-                            echo '<td>
-                                    <input type="checkbox" class="slectOne" name="Slot[]" value="' . $slot . '" ' . $disabled . '>
-                                  </td>';
+                            echo "<td>
+                                    <input type='checkbox' class='slectOne' name='Slot[]' value='$slot' $disabled>
+                                  </td>";
                         }
                         ?>
                     </tr>
@@ -180,3 +173,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
