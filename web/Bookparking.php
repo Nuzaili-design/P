@@ -29,7 +29,8 @@ $hourly_cost = $costs[1] ?? 0; // Get cost per hour
 $parking_cost = $selected_hours * $hourly_cost; // Total cost
 $endtime = date("H:i", strtotime("+$selected_hours hours", strtotime($selected_time)));
 
-// Fetch booked slots with proper time conflict check
+// Fetch booked slots with time conflict check
+$booked_slots = [];
 $booking_query = "SELECT slot_name FROM slot_booking 
                   WHERE pdate = :pdate 
                   AND slot_name = :slot_name
@@ -40,6 +41,7 @@ $booking_query = "SELECT slot_name FROM slot_booking
                       OR
                       (stime >= :selected_time AND stime < :endtime)
                   )";
+
 
 $stmt = $conn->prepare($booking_query);
 $stmt->bindParam(':pdate', $selected_date);
@@ -158,8 +160,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php
                         for ($i = 1; $i <= 10; $i++) {
                             $slot = "Slot $i";
+                            $disabled = in_array($slot, $booked_slots) ? 'disabled' : '';
                             echo '<td>
-                                    <input type="checkbox" class="slectOne" name="Slot[]" value="' . $slot . '" ' . (in_array($slot, $booked_slots) ? 'disabled' : '') . '>
+                                    <input type="checkbox" class="slectOne" name="Slot[]" value="' . $slot . '" ' . $disabled . '>
                                   </td>';
                         }
                         ?>
