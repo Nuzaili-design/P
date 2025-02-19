@@ -24,24 +24,24 @@ while ($row = $cost_result->fetch(PDO::FETCH_ASSOC)) {
 $selected_date = $_SESSION['selected_date'] ?? '';
 $selected_time = $_SESSION['selected_time'] ?? '';
 $selected_hours = $_SESSION['selected_hours'] ?? '';
+$hourly_cost = $costs[1] ?? 0; // Get the cost for 1 hour
+$parking_cost = $selected_hours * $hourly_cost; // Multiply by selected hours
 
-$hourly_cost = $costs[1] ?? 0; // Get cost per hour
-$parking_cost = $selected_hours * $hourly_cost; // Total cost
 $endtime = date("H:i", strtotime("+$selected_hours hours", strtotime($selected_time)));
 
-// Fetch booked slots with correct time conflict check
-$booking_query = "SELECT slot_name FROM slot_booking 
-                  WHERE pdate = :pdate 
-                  AND (
-                      (stime < :endtime AND endtime > :stime) -- Check overlapping bookings
-                  )";
-
+// Fetch booked slots and ensure availability based on time overlap
+$booked_slots = [];
+$booking_query = "SELECT slot_name, stime, endtime FROM slot_booking WHERE pdate = :pdate";
 $stmt = $conn->prepare($booking_query);
 $stmt->bindParam(':pdate', $selected_date);
-$stmt->bindParam(':stime', $selected_time);
-$stmt->bindParam(':endtime', $endtime);
 $stmt->execute();
-$booked_slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($bookings as $booking) {
+    if (($selected_time < $booking['endtime']) && ($endtime > $booking['stime'])) {
+        $booked_slots[] = $booking['slot_name']; // Mark slot as booked if it overlaps
+    }
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -53,16 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phrs = $_POST['phrs'] ?? 0;
     $endtime = date("H:i", strtotime("+$phrs hours", strtotime($stime)));
 
-    // Recalculate parking cost
-    $parking_cost = $phrs * $hourly_cost;
-
     foreach ($selected_slots as $slot) {
-        // Check if the slot is already booked for the selected time
-        $checkQuery = "SELECT COUNT(*) FROM slot_booking 
+        // Check if slot is already booked for overlapping time
+        $checkQuery = "SELECT * FROM slot_booking 
                        WHERE slot_name = :slot_name 
                        AND pdate = :pdate 
                        AND (stime < :endtime AND endtime > :stime)";
-
         $stmt = $conn->prepare($checkQuery);
         $stmt->bindParam(':slot_name', $slot);
         $stmt->bindParam(':pdate', $pdate);
@@ -70,12 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':endtime', $endtime);
         $stmt->execute();
 
-        if ($stmt->fetchColumn() > 0) {
+        if ($stmt->rowCount() > 0) {
             echo "<script>alert('Slot $slot is already booked for this time!');</script>";
             continue;
         }
 
-        // Insert the booking into the database
+        // Insert into database
         $insert_query = $conn->prepare("
             INSERT INTO slot_booking (uname, uid, pdate, stime, phrs, umail, slot_name, time, endtime, pcost, ustatus)
             VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, :stime, :endtime, :pcost, 'No')
@@ -97,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo "<script>alert('Slots booked successfully!'); window.location.href='your_bookings.php';</script>";
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -153,10 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php
                         for ($i = 1; $i <= 10; $i++) {
                             $slot = "Slot $i";
-                            $disabled = in_array($slot, $booked_slots) ? 'disabled' : '';
-                            echo "<td>
-                                    <input type='checkbox' class='slectOne' name='Slot[]' value='$slot' $disabled>
-                                  </td>";
+                            echo '<td>
+                                    <input type="checkbox" class="slectOne" name="Slot[]" value="' . $slot . '" ' . (in_array($slot, $booked_slots) ? 'disabled' : '') . '>
+                                  </td>';
                         }
                         ?>
                     </tr>
