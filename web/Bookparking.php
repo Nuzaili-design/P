@@ -24,21 +24,21 @@ while ($row = $cost_result->fetch(PDO::FETCH_ASSOC)) {
 $selected_date = $_SESSION['selected_date'] ?? '';
 $selected_time = $_SESSION['selected_time'] ?? '';
 $selected_hours = $_SESSION['selected_hours'] ?? '';
+$hourly_cost = $costs[1] ?? 0;
+$parking_cost = $selected_hours * $hourly_cost;
 
-$hourly_cost = $costs[1] ?? 0; // Get cost per hour
-$parking_cost = $selected_hours * $hourly_cost; // Total cost
-$endtime = date("H:i", strtotime("+$selected_hours hours", strtotime($selected_time)));
+$endtime = date("H:i:s", strtotime("+$selected_hours hours", strtotime($selected_time)));
 
-// Fetch booked slots with proper time conflict check
+// Fetch booked slots and ensure availability based on time overlap
+$booked_slots = [];
 $booking_query = "SELECT slot_name FROM slot_booking 
                   WHERE pdate = :pdate 
-                  AND slot_name = :slot_name
                   AND (
-                      (:selected_time >= stime AND :selected_time < endtime) 
+                      (:selected_time >= stime AND :selected_time < endtime)  
                       OR 
-                      (:endtime > stime AND :endtime <= endtime)
+                      (:endtime > stime AND :endtime <= endtime)  
                       OR
-                      (stime >= :selected_time AND stime < :endtime)
+                      (stime >= :selected_time AND stime < :endtime)  
                   )";
 
 $stmt = $conn->prepare($booking_query);
@@ -54,16 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $uname = htmlspecialchars($_POST['uname'] ?? '');
     $umail = htmlspecialchars($_POST['umail'] ?? '');
     $pdate = $_POST['pdate'] ?? $selected_date;
-    $stime = $_POST['stime'] ?? '';
+    $stime = date("H:i:s", strtotime($_POST['stime']));
     $phrs = $_POST['phrs'] ?? 0;
-    $endtime = date("H:i", strtotime("+$phrs hours", strtotime($stime)));
-
-    // Recalculate parking cost
-    $parking_cost = $phrs * $hourly_cost;
+    $endtime = date("H:i:s", strtotime("+$phrs hours", strtotime($stime)));
 
     foreach ($selected_slots as $slot) {
-        // Check if the slot is already booked for the selected time
-        $checkQuery = "SELECT * FROM slot_booking 
+        // Check if slot is already booked for overlapping time
+        $checkQuery = "SELECT COUNT(*) FROM slot_booking 
                        WHERE slot_name = :slot_name 
                        AND pdate = :pdate 
                        AND (stime < :endtime AND endtime > :stime)";
@@ -74,13 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':stime', $stime);
         $stmt->bindParam(':endtime', $endtime);
         $stmt->execute();
+        $slotAlreadyBooked = $stmt->fetchColumn();
 
-        if ($stmt->rowCount() > 0) {
+        if ($slotAlreadyBooked > 0) {
             echo "<script>alert('Slot $slot is already booked for this time!');</script>";
             continue;
         }
 
-        // Insert the booking into the database
+        // Insert into database
         $insert_query = $conn->prepare("
             INSERT INTO slot_booking (uname, uid, pdate, stime, phrs, umail, slot_name, time, endtime, pcost, ustatus)
             VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, :stime, :endtime, :pcost, 'No')
@@ -177,5 +175,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
