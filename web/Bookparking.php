@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <div class="form-group">
-                <label>Parking Cost (in Rupees):</label>
+                <label>Parking Cost (in Turkish lire):</label>
                 <input type="text" class="form-control" value="<?php echo $parking_cost; ?>" readonly>
             </div>
 

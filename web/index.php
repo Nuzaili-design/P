@@ -81,13 +81,13 @@ if (isset($_GET['Success'])) {
         <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="img/pexels-jose-espinal-1000633.jpg" alt="Image">
+                    <img class="w-100" src="img/parkk.jpg" alt="Image">
                     <div class="carousel-caption d-flex align-items-center">
                         <div class="container">
                             <div class="row align-items-center justify-content-center justify-content-lg-start">
                                 <div class="col-10 col-lg-7 text-center text-lg-start">
                                     <h6 class="text-white text-uppercase mb-3 animated slideInDown">// Vehicle Parking //</h6>
-                                    <h1 class="display-3 text-white mb-4 pb-3 animated slideInDown">QR Code-based Smart Vehicle Parking Management System</h1>
+                                    <h2 class="display-3 text-white mb-4 pb-3 animated slideInDown">BETTER PARKING EXPERIENCE</h2>
                                 </div>
                             </div>
                         </div>

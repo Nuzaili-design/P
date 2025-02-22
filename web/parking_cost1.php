@@ -90,7 +90,7 @@ try {
                     <div class="col-lg-8 col-md-12">
                         <div class="bg-primary d-flex flex-column justify-content-center text-center h-100 p-4">
                             <h3 class="text-white mb-4"><i class="fa fa-clock me-3"></i>Ticket Cost Per Hour</h3>
-                            <a href="" class="btn btn-secondary py-3 px-5">Rs. <?= htmlspecialchars($parking['cost']) ?></a>
+                            <a href="" class="btn btn-secondary py-3 px-5">TL. <?= htmlspecialchars($parking['cost']) ?></a>
                         </div>
                     </div>
                 </center>

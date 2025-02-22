@@ -99,7 +99,7 @@ $endtime = formatTimeAMPM($booking['endtime']);
                         <p><strong>Date: </strong><?= htmlspecialchars($booking['pdate']) ?></p>
                         <p><strong>Time: </strong><?= $stime ?> - <?= $endtime ?></p>
                         <p><strong>Location: </strong> <?= htmlspecialchars($booking['slot_name']) ?></p>
-                        <p><strong>Cost: </strong>Rs. <?= htmlspecialchars($booking['pcost']) ?></p>
+                        <p><strong>Cost: </strong>TL. <?= htmlspecialchars($booking['pcost']) ?></p>
                     </div>
                 </div>
 
