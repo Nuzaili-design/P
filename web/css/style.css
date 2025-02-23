@@ -145,17 +145,21 @@
 
 /*** Header ***/
 .carousel-caption {
-    top: 0;
+   top: 0;
+    position: absolute;
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     background: rgba(0, 0, 0, .7);
     z-index: 1;
+    opacity: 0; /* Start with the caption hidden */
+    transition: opacity 0.5s ease-in-out; /* Smooth fade-in effect */
 }
 
 .carousel-control-prev,
 .carousel-control-next {
-    width: 10%;
+    z-index: 2; /* Ensure arrows stay above the images */
+    width: 3%;
 }
 
 .carousel-control-prev-icon,
@@ -164,12 +168,56 @@
     height: 3rem;
 }
 
+/* Ensure consistent height for carousel items */
+#header-carousel .carousel-item {
+    position: relative;
+    min-height: 450px; /* Adjust as needed */
+}
+
+#header-carousel .carousel-item img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Fade in caption when active */
+#header-carousel .carousel-item.active .carousel-caption {
+    opacity: 1;
+}
+
+/* Animation for h2 and p */
+.carousel-item .carousel-caption h2 {
+    opacity: 0;
+    transform: translateY(-20px); /* Start off-screen */
+    animation: fadeInUp 1s forwards; /* Animate h2 */
+}
+
+.carousel-item .carousel-caption p {
+    opacity: 0;
+    transform: translateY(20px); /* Start below */
+    animation: fadeInUp 2s forwards;
+    animation-delay: 0.9s; /* Delay p until after h2 */
+}
+
+/* Animation definitions */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* Starts offscreen */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* End position */
+    }
+}
+
 @media (max-width: 768px) {
     #header-carousel .carousel-item {
         position: relative;
         min-height: 450px;
     }
-    
+
     #header-carousel .carousel-item img {
         position: absolute;
         width: 100%;
