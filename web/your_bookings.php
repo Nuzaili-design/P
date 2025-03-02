@@ -100,7 +100,7 @@ function formatTimeAMPM($time) {
     </nav>
     <!-- Navbar End -->
 
-    <!-- Page Header Start -->
+    <!-- Page Header Start 
     <div class="container-fluid page-header mb-5 p-0">
         <div class="container-fluid page-header-inner py-5">
             <div class="container text-center">
@@ -108,7 +108,7 @@ function formatTimeAMPM($time) {
             </div>
         </div>
     </div>
-
+    -->
     <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="row g-4">

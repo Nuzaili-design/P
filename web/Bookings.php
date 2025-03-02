@@ -46,6 +46,12 @@ try {
 </head>
 
 <body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -67,7 +73,7 @@ try {
     </nav>
     <!-- Navbar End -->
 
-    <!-- Page Header Start -->
+    <!-- Page Header Start 
     <div class="container-fluid page-header mb-5 p-0">
         <div class="container-fluid page-header-inner py-5">
             <div class="container text-center">
@@ -76,7 +82,7 @@ try {
             </div>
         </div>
     </div>
-    <!-- Page Header End -->
+     -->
 
     <!-- Booking Details Start -->
     <div class="container-xxl py-5">
@@ -89,6 +95,7 @@ try {
                 <table id="naresh" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>Name</th>
                             <th>Parking Date</th>
                             <th>Start Time</th>
                             <th>End Time</th>
@@ -108,6 +115,7 @@ try {
                                 $stime = date('h:i A', strtotime($row['stime']));
                                 $endtime = date('h:i A', strtotime($row['endtime']));
                                 echo "<tr>
+                                        <td>{$row['uname']}</td>
                                         <td>{$row['pdate']}</td>
                                         <td>{$stime}</td>
                                         <td>{$endtime}</td>

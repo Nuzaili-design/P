@@ -41,11 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            header("Location: Book_parking.php?Already");
+            header("Location: Book_parking.php?AlreadyBooked");
             exit();
         } else {
-            // Create folder for QR codes
-            $path = "D://QRParking";
+            // Define QR code storage path (inside project directory)
+            $path = __DIR__ . "/qr_codes";
             if (!is_dir($path)) {
                 mkdir($path, 0777, true);
             }
@@ -53,24 +53,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Generate unique QR code value
             $characters = "378AIJKLM5CD4NOP126EFGHB9";
             $codeval = substr(str_shuffle($characters), 0, 10);
+            $qrFileName = uniqid("QR_", true) . ".png";
+            $pathQR = $path . "/" . $qrFileName;
 
-            $pathQR = $path . "/" . $umail . ".png";
+            // Generate QR code
+            if (!QRGen::createQR($codeval, $pathQR)) {
+                error_log("QR Code Generation Failed for user: " . $umail);
+                header("Location: Book_parking.php?QRGenFailed");
+                exit();
+            }
 
-            // Create QR code
-            QRGen::createQR($codeval, $pathQR);
+            // Ensure QR code file exists before reading
+            if (!file_exists($pathQR)) {
+                error_log("QR Code file not found: " . $pathQR);
+                header("Location: Book_parking.php?QRFileNotFound");
+                exit();
+            }
 
             // Read QR code as binary data
             $imageData = file_get_contents($pathQR);
+            if (!$imageData) {
+                error_log("Failed to read QR Code file: " . $pathQR);
+                header("Location: Book_parking.php?QRReadFailed");
+                exit();
+            }
 
             // Insert into database
             $stmt = $con->prepare("INSERT INTO slot_booking (uname, uid, pdate, stime, phrs, umail, slot_name, time, endtime, pcost, image_data, codeval) 
                                    VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssssssb", $uname, $uid, $pdate, $stimeFormatted, $phrs, $umail, $slot_name, $etimeFormatted, $totalcost, $imageData, $codeval);
 
+            // Bind non-BLOB values
+            $stmt->bind_param("ssssssssss", $uname, $uid, $pdate, $stimeFormatted, $phrs, $umail, $slot_name, $etimeFormatted, $totalcost, $codeval);
+
+            // Bind BLOB separately
+            $stmt->send_long_data(10, $imageData); // Correct BLOB handling
+
+            // Execute the query
             if ($stmt->execute()) {
-                header("Location: Book_parking.php?Slot_booked");
+                header("Location: Book_parking.php?SlotBooked");
                 exit();
             } else {
+                error_log("Database Insert Failed: " . $stmt->error);
                 header("Location: Book_parking.php?Failed");
                 exit();
             }
@@ -82,3 +105,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+

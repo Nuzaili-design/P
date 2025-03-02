@@ -67,7 +67,7 @@ try {
         </div>
     </nav>
 
-    <!-- Page Header Start -->
+    <!-- Page Header Start 
     <div class="container-fluid page-header mb-5 p-0">
         <div class="container-fluid page-header-inner py-5">
             <div class="container text-center">
@@ -75,6 +75,7 @@ try {
             </div>
         </div>
     </div>
+    -->
 
     <!-- Call To Action Start -->
     <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">

@@ -77,7 +77,7 @@ $costs = $statement->fetchAll(PDO::FETCH_ASSOC);
     </nav>
     <!-- Navbar End -->
 
-    <!-- Page Header Start -->
+    <!-- Page Header Start 
     <div class="container-fluid page-header mb-5 p-0">
         <div class="container-fluid page-header-inner py-5">
             <div class="container text-center">
@@ -85,7 +85,7 @@ $costs = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-    <!-- Page Header End -->
+    -->
 
     <!-- Parking Cost Update Start -->
     <div class="container-xxl py-5">

@@ -10,7 +10,7 @@ if (!isset($_SESSION['uid'])) {
     die("Access denied. Please login first.");
 }
 
-$uid = $_SESSION['uid']; // Secure user ID from session
+$uid = $_SESSION['uid']; 
 
 // Fetch parking cost details from the database
 $cost_query = "SELECT * FROM parking_cost";
@@ -29,7 +29,7 @@ $parking_cost = $selected_hours * $hourly_cost;
 
 $endtime = date("H:i:s", strtotime("+$selected_hours hours", strtotime($selected_time)));
 
-// Fetch booked slots and ensure availability based on time overlap
+// Fetch booked slots
 $booked_slots = [];
 $booking_query = "SELECT slot_name FROM slot_booking 
                   WHERE pdate = :pdate 
@@ -47,6 +47,8 @@ $stmt->bindParam(':selected_time', $selected_time);
 $stmt->bindParam(':endtime', $endtime);
 $stmt->execute();
 $booked_slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+$success = false; // ✅ Track if booking was successful
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -74,14 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $slotAlreadyBooked = $stmt->fetchColumn();
 
         if ($slotAlreadyBooked > 0) {
-            echo "<script>alert('Slot $slot is already booked for this time!');</script>";
+            $_SESSION['error_message'] = "Slot $slot is already booked!";
             continue;
         }
 
         // Insert into database
         $insert_query = $conn->prepare("
             INSERT INTO slot_booking (uname, uid, pdate, stime, phrs, umail, slot_name, time, endtime, pcost, ustatus)
-            VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, :stime, :endtime, :pcost, 'No')
+            VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, :time, :endtime, :pcost, 'No')
         ");
 
         $insert_query->bindParam(':uname', $uname);
@@ -91,13 +93,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $insert_query->bindParam(':phrs', $phrs);
         $insert_query->bindParam(':umail', $umail);
         $insert_query->bindParam(':slot_name', $slot);
+        $insert_query->bindParam(':time', $time);
         $insert_query->bindParam(':endtime', $endtime);
         $insert_query->bindParam(':pcost', $parking_cost);
-
         $insert_query->execute();
+        $success = true;
     }
 
-    echo "<script>alert('Slots booked successfully!'); window.location.href='your_bookings.php';</script>";
+    if ($success) {
+        $_SESSION['success_message'] = "Slots booked successfully!";
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']); // ✅ Reload to execute JavaScript alert
+    exit;
 }
 ?>
 
@@ -108,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code-based Smart Vehicle Parking</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container mt-5">
@@ -125,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="form-group">
                 <label>Selected Date:</label>
-                <input type="date" class="form-control" name="pdate" value="<?php echo $selected_date; ?>" required min="<?php echo date('Y-m-d'); ?>">
+                <input type="date" class="form-control" name="pdate" value="<?php echo $selected_date; ?>" readonly required min="<?php echo date('Y-m-d'); ?>">
             </div>
 
             <div class="form-group">
@@ -171,7 +180,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        <?php if (isset($_SESSION['success_message'])): ?>
+            Swal.fire('Success!', '<?php echo $_SESSION["success_message"]; ?>', 'success').then(() => {
+                window.location.href = 'your_bookings.php'; 
+            });
+            <?php unset($_SESSION['success_message']); endif; ?>
+    </script>
+
 </body>
 </html>
+
