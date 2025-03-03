@@ -39,13 +39,13 @@ include('db_connect.php');
 </head>
 
 <body>
-    <!-- Spinner Start 
+    <!-- Spinner Start  -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    -->
+   
 
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
@@ -77,7 +77,7 @@ include('db_connect.php');
     -->
 
     <!-- Parking Logs Start -->
-    <div class="container-xxl py-5">
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                 <h3 class="text-primary text-uppercase">// Parking Logs //</h3>

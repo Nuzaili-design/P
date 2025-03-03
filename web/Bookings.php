@@ -85,7 +85,7 @@ try {
      -->
 
     <!-- Booking Details Start -->
-    <div class="container-xxl py-5">
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                 <h3 class="text-primary text-uppercase">// Booking Details //</h3>

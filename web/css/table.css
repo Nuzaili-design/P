@@ -7,27 +7,75 @@ and open the template in the editor.
     Created on : Dec 17, 2022, 8:09:49 PM
     Author     : Murthi
 */
-
+/* TABLE CONTAINER */
+/* TABLE CONTAINER */
 #naresh {
-  font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
+  font-family: "Poppins", Arial, sans-serif;
+  border-collapse: separate; /* Allows rounded corners */
   width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 102, 51, 0.3); /* Soft border */
 }
 
-#naresh td, #naresh th {
-  border: 1px solid #ddd;
-  padding: 8px;
-  color: black;
-}
-
-#naresh tr:nth-child(even){background-color: #f2f2f2;}
-
-#naresh tr:hover {background-color: #ddd;}
-
+/* HEADER STYLE */
 #naresh th {
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding: 16px;
   text-align: left;
-  background-color:#cc3300;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #ff6600, #ff3366);
   color: white;
+  letter-spacing: 1px;
+  position: relative;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* HEADER GLOW EFFECT */
+#naresh th::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 80%;
+  height: 100%;
+  background: radial-gradient(rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* TABLE DATA STYLE */
+#naresh td {
+  padding: 14px;
+  border: 1px solid rgba(255, 102, 51, 0.3); /* Soft border around cells */
+  color: #222;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+/* ALTERNATE ROWS (ZEBRA STRIPING) */
+#naresh tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* HOVER EFFECT: LIFT + GLOW */
+#naresh tr:hover {
+  background-color: rgba(255, 102, 51, 0.1);
+  transform: scale(1.02);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(255, 102, 51, 0.4);
+  border: 1px solid rgba(255, 102, 51, 0.6); /* Glowing effect */
+  cursor: pointer;
+}
+
+/* RESPONSIVE DESIGN */
+@media screen and (max-width: 768px) {
+  #naresh td, #naresh th {
+    padding: 12px;
+    font-size: 14px;
+  }
 }

@@ -63,29 +63,41 @@ if (isset($_GET['approve_id'])) {
         <?php } ?>
     </script>
 
-    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+ <!-- Spinner Start  -->
+ <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+   
+ <!-- Navbar Start -->
+ <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
         </a>
-        <div class="collapse navbar-collapse">
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="AdminHome.php" class="nav-item nav-link">Home</a>
-                <a href="UserDetails.php" class="nav-item nav-link active">User Details</a>
+                <a href="UserDetails.php" class="nav-item nav-link">User Details</a>
                 <a href="ParkingCost.php" class="nav-item nav-link">Parking Cost</a>
-                <a href="Bookings.php" class="nav-item nav-link">Bookings</a>
-                <a href="ParkingLogs.php" class="nav-item nav-link">Parking Logs</a>
+                <a href="Bookings.php" class="nav-item nav-link active">Bookings</a>
+                <a href="ParkingLogs1.php" class="nav-item nav-link">Parking Logs</a>
                 <a href="logout.php" class="nav-item nav-link">Logout</a>
             </div>
         </div>
     </nav>
+    <!-- Navbar End -->
 
-    <div class="container-xxl py-5">
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                 <h3 class="text-primary text-uppercase">// User Details //</h3>
             </div>
             <div class="row g-4">
-                <table id="userTable">
+                <table id="naresh" class="table table-bordered">
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
