@@ -108,7 +108,7 @@ $endtime = formatTimeAMPM($booking['endtime']);
                     
                     
                     
-                <img src="qrpic.php?uid=<?= htmlspecialchars($booking['uid']); ?>" alt="QR Code" width="150" onerror="console.error('QR Code failed to load! Check qrpic.php')">
+                <img src="qrpic.php?id=<?= htmlspecialchars($booking['id']); ?>" alt="QR Code" width="150" onerror="console.error('QR Code failed to load! Check qrpic.php')">
 
 
 

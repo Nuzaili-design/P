@@ -1,32 +1,39 @@
 <?php
-require 'db_connect.php'; // Ensure database connection
+require $_SERVER['DOCUMENT_ROOT'] . '/QRBasedVehicleParking/phpqrcode/phpqrcode.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/QRBasedVehicleParking/web/db_connect.php';
 
 try {
     $conn = SQLConnection::getConnection();
 
-    // Validate UID
-    if (!isset($_GET['uid']) || !ctype_digit($_GET['uid'])) {
+    // Validate id
+    if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
         header("HTTP/1.1 400 Bad Request");
-        die("❌ Invalid UID");
+        die("❌ Invalid id");
     }
 
-    $uid = intval($_GET['uid']);
+    $id = intval($_GET['id']);
 
-    // Fetch QR Code image from database
-    $query = "SELECT image_data FROM slot_booking WHERE uid = ?";
+    // Fetch booking details
+    $query = "SELECT * FROM slot_booking WHERE id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->execute([$uid]);
+    $stmt->execute([$id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$result || empty($result['image_data'])) {
+    if (!$result) {
         header("HTTP/1.1 404 Not Found");
-        die("❌ No matching QR Code found.");
+        die("❌ No matching booking found.");
     }
 
-    // Output the image
+    // Generate QR code dynamically
+    $data = "User ID: " . $id . "\n";
+    $data .= "Date: " . $result['pdate'] . "\n";
+    $data .= "Time: " . $result['stime'] . " - " . $result['endtime'] . "\n";
+    $data .= "Location: " . $result['slot_name'] . "\n";
+    $data .= "Cost: " . $result['pcost'];
+
+    // Output the QR code as a PNG image
     header("Content-Type: image/png");
-    header("Content-Length: " . strlen($result['image_data'])); // Correct image size for proper display
-    echo $result['image_data'];
+    QRcode::png($data, false, QR_ECLEVEL_L, 10); // Adjust size and error correction level as needed
     exit();
 
 } catch (PDOException $e) {
@@ -34,4 +41,3 @@ try {
     die("❌ Database Error: " . $e->getMessage());
 }
 ?>
-

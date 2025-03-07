@@ -30,7 +30,7 @@ if (isset($_GET['Success'])) {
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700&family=Ubuntu:wght@400;500&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700&family=Ubuntu:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -77,63 +77,63 @@ if (isset($_GET['Success'])) {
     <!-- Navbar End -->
 
     <!-- Carousel Start -->
-<div class="container-fluid p-0 mb-5">
-    <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <!-- First Image -->
-            <div class="carousel-item active">
-                <img class="w-100" src="img/parkk.jpg" alt="Image">
-                <div class="carousel-caption d-flex align-items-center">
-                    <div class="container">
-                        <div class="row align-items-center justify-content-center justify-content-lg-start">
-                            <div class="col-10 col-lg-7 text-center text-lg-start">
-                                <h2 class="text-white text-uppercase mb-3 animated slideInDown">fast and reliable way of car parking</h2>
-                                <p class="text-white mb-4 animated slideInDown">Our smart parking system ensures a smooth experience, reducing wait times and maximizing efficiency for drivers.</p>
+    <div class="container-fluid p-0 mb-5">
+        <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- First Image -->
+                <div class="carousel-item active">
+                    <img class="w-100" src="img/parkk.jpg" alt="Image">
+                    <div class="carousel-caption d-flex align-items-center">
+                        <div class="container">
+                            <div class="row align-items-center justify-content-center justify-content-lg-start">
+                                <div class="col-10 col-lg-7 text-center text-lg-start">
+                                    <h2 class="text-white text-uppercase mb-3 animated slideInDown">fast and reliable way of car parking</h2>
+                                    <p class="text-white mb-4 animated slideInDown">Our smart parking system ensures a smooth experience, reducing wait times and maximizing efficiency for drivers.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Second Image -->
+                <div class="carousel-item">
+                    <img class="w-100" src="img/pexels-k-howard-2220292.jpg" alt="Image">
+                    <div class="carousel-caption d-flex align-items-center">
+                        <div class="container">
+                            <div class="row align-items-center justify-content-center justify-content-lg-start">
+                                <div class="col-10 col-lg-7 text-center text-lg-start">
+                                    <h2 class="text-white text-uppercase mb-3 animated slideInDown">Parking Made Simple, Just for You</h2>
+                                    <p class="text-white mb-4 animated slideInDown">Say goodbye to stressful parking! Our reliable service helps you find and secure a spot in no time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Third Image  -->
+                <div class="carousel-item">
+                    <img class="w-100" src="img/egoh.jpg" alt="Image">
+                    <div class="carousel-caption d-flex align-items-center">
+                        <div class="container">
+                            <div class="row align-items-center justify-content-center justify-content-lg-start">
+                                <div class="col-10 col-lg-7 text-center text-lg-start">
+                                    <h2 class="text-white text-uppercase mb-3 animated slideInDown">Simplifying Your Parking Experience</h2>
+                                    <p class="text-white mb-4 animated slideInDown">With our intuitive platform, you'll enjoy easy access to parking spaces, reducing waiting times and offering a seamless service.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Second Image -->
-            <div class="carousel-item">
-                <img class="w-100" src="img/pexels-k-howard-2220292.jpg" alt="Image">
-                <div class="carousel-caption d-flex align-items-center">
-                    <div class="container">
-                        <div class="row align-items-center justify-content-center justify-content-lg-start">
-                            <div class="col-10 col-lg-7 text-center text-lg-start">
-                                <h2 class="text-white text-uppercase mb-3 animated slideInDown">Parking Made Simple, Just for You</h2>
-                                <p class="text-white mb-4 animated slideInDown">Say goodbye to stressful parking! Our reliable service helps you find and secure a spot in no time.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Third Image  -->
-            <div class="carousel-item">
-                <img class="w-100" src="img/egoh.jpg" alt="Image">
-                <div class="carousel-caption d-flex align-items-center">
-                    <div class="container">
-                        <div class="row align-items-center justify-content-center justify-content-lg-start">
-                            <div class="col-10 col-lg-7 text-center text-lg-start">
-                                <h2 class="text-white text-uppercase mb-3 animated slideInDown">Simplifying Your Parking Experience</h2>
-                                <p class="text-white mb-4 animated slideInDown">With our intuitive platform, you'll enjoy easy access to parking spaces, reducing waiting times and offering a seamless service.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#header-carousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
-</div>
-<!-- Carousel End -->
+    <!-- Carousel End -->
 
 
     <!-- Service Start -->
@@ -179,7 +179,7 @@ if (isset($_GET['Success'])) {
                 <div class="col-lg-3 col-md-6">
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    
+
                 </div>
                 <div class="col-lg-3 col-md-6">
                 </div>
@@ -191,7 +191,7 @@ if (isset($_GET['Success'])) {
             <div class="copyright">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                         <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
+                        <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                     </div>
