@@ -13,9 +13,8 @@ try {
 
     $id = intval($_GET['id']);
 
-    // Fetch booking details
-    $query = "SELECT * FROM slot_booking WHERE id = ?";
-    $stmt = $conn->prepare($query);
+    // Check if a codevalue already exists
+    $stmt = $conn->prepare("SELECT codeval FROM slot_booking WHERE id = ?");
     $stmt->execute([$id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -24,16 +23,23 @@ try {
         die("❌ No matching booking found.");
     }
 
-    // Generate QR code dynamically
-    $data = "User ID: " . $id . "\n";
-    $data .= "Date: " . $result['pdate'] . "\n";
-    $data .= "Time: " . $result['stime'] . " - " . $result['endtime'] . "\n";
-    $data .= "Location: " . $result['slot_name'] . "\n";
-    $data .= "Cost: " . $result['pcost'];
+    if (empty($result['codeval'])) {
+        // Generate a unique codevalue (random 10-character string)
+        $codeval = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 10));
+
+        // Store codevalue in the database
+        $updateStmt = $conn->prepare("UPDATE slot_booking SET codeval = ? WHERE id = ?");
+        $updateStmt->execute([$codeval, $id]);
+    } else {
+        $codeval = $result['codeval']; // Use existing codevalue
+    }
+
+    // Generate QR code with only the codevalue
+    $qrData = "QR-Based-Parking|$codeval";
 
     // Output the QR code as a PNG image
     header("Content-Type: image/png");
-    QRcode::png($data, false, QR_ECLEVEL_L, 10); // Adjust size and error correction level as needed
+    QRcode::png($qrData, false, QR_ECLEVEL_L, 10); // Adjust size and error correction level as needed
     exit();
 
 } catch (PDOException $e) {
