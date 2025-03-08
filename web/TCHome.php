@@ -1,20 +1,50 @@
 <?php
+require 'db_connect.php'; // Ensure database connection
+
+$conn = SQLConnection::getConnection();
+
+// Handle alert messages
 if (isset($_GET['Failed'])) {
-    echo "<script>alert('Incorrect id and password');</script>";
+    echo "<script>alert('❌ Incorrect ID or Password');</script>";
 }
 if (isset($_GET['AlreadyUsed'])) {
-    echo "<script>alert('Ticket Already Used Or Expired');</script>";
+    echo "<script>alert('⚠️ Ticket Already Used Or Expired');</script>";
 }
 if (isset($_GET['Invalid'])) {
-    echo "<script>alert('Invalid Ticket');</script>";
+    echo "<script>alert('❌ Invalid Ticket');</script>";
 }
 if (isset($_GET['Success'])) {
-    echo "<script>alert('Login Success');</script>";
+    echo "<script>alert('✅ Login Successful');</script>";
 }
 if (isset($_GET['LogAdded'])) {
-    echo "<script>alert('Log Details Added');</script>";
+    echo "<script>alert('📝 Log Details Added');</script>";
+}
+
+// Check if form data is received from verifyTicket.php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeval'], $_POST['uid'], $_POST['uname'], $_POST['slot_name'], $_POST['vnumber'])) {
+    $codeval = htmlspecialchars($_POST['codeval']);
+    $uid = htmlspecialchars($_POST['uid']);
+    $uname = htmlspecialchars($_POST['uname']);
+    $slot_name = htmlspecialchars($_POST['slot_name']);
+    $vnumber = htmlspecialchars($_POST['vnumber']);
+    
+   
+
+    try {
+        // Insert log entry into parking_details
+        $stmt = $conn->prepare("INSERT INTO parking_details (vnumber, codeval, uid, uname, slot_name, timestamp) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$vnumber,$codeval, $uid, $uname, $slot_name, $vnumber]);
+
+        header("Location: TCHome.php?LogAdded"); // Redirect with success message
+        exit();
+    } catch (Exception $ex) {
+        error_log($ex->getMessage());
+        header("Location: TCHome.php?Error"); // Redirect with error message
+        exit();
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
