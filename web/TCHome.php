@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeval'], $_POST['ui
 
     try {
         // Insert log entry into parking_details
-        $stmt = $conn->prepare("INSERT INTO parking_details (vnumber, codeval, uid, uname, slot_name, timestamp) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$vnumber,$codeval, $uid, $uname, $slot_name, $vnumber]);
+        $stmt = $conn->prepare("INSERT INTO parking_details (vnumber, codeval, uid, uname, slot_name) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$vnumber,$codeval, $uid, $uname, $slot_name]);
 
         header("Location: TCHome.php?LogAdded"); // Redirect with success message
         exit();
