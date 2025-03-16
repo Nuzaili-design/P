@@ -71,7 +71,7 @@ if (isset($_GET['Success'])) {
                 <a href="UserDetails.php" class="nav-item nav-link">User Details</a>
                 <a href="ParkingCost.php" class="nav-item nav-link">Parking Cost</a>
                 <a href="Bookings.php" class="nav-item nav-link">Bookings</a>
-                <a href="ParkingLogs.php" class="nav-item nav-link">Parking Logs</a>
+                <a href="ParkingLogs1.php" class="nav-item nav-link">Parking Logs</a>
                 <a href="logout.php" class="nav-item nav-link">Logout</a>
             </div>
         </div>
