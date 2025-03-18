@@ -114,7 +114,7 @@ function formatTimeAMPM($time) {
             <div class="row g-4">
                 <div class="col-lg-8 col-md-6">
                     <h6 class="text-primary text-uppercase">// Booking //</h6>
-                    <h1 class="mb-4">Slot Booking Cost</h1>
+                    <h1 class="mb-4">Your Bookings</h1>
                     <br><br><br><br>
                     <p class="mb-0"></p>
                 </div>

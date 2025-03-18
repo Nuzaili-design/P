@@ -1,6 +1,15 @@
 <?php
+session_start();
 require 'db_connect.php'; // Database connection file
 $conn = SQLConnection::getConnection();
+
+
+// ✅ Check if the admin is logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: Administrator.php?AccessDenied");
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

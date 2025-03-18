@@ -1,7 +1,14 @@
 <?php
+session_start();
+
+// ✅ Check if the admin is logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: Administrator.php?AccessDenied");
+    exit();
+}
 // Checking for request parameters and triggering appropriate JavaScript alerts
 if (isset($_GET['Failed'])) {
-    echo "<script>alert('Incorrect id and password');</script>";
+    echo "<script>alert('Incorrect ID and password');</script>";
 }
 if (isset($_GET['AlreadyUsed'])) {
     echo "<script>alert('Ticket Already Used');</script>";
@@ -13,6 +20,7 @@ if (isset($_GET['Success'])) {
     echo "<script>alert('Login Success');</script>";
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

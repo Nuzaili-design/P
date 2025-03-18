@@ -1,6 +1,14 @@
 <?php
 // Include the database connection file using an absolute path
 include_once __DIR__ . '/db_connect.php'; // Adjust the path if the file is in a different directory
+session_start();
+
+
+// ✅ Check if the admin is logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: Administrator.php?AccessDenied");
+    exit();
+}
 
 // Debugging: Check if connection is established
 try {

@@ -3,7 +3,11 @@
 include 'db_connect.php';
 session_start();
 
-
+// Redirect if not logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: Administrator.php?AccessDenied");
+    exit();
+}
 // Fetch parking cost from the database
 $conn = SQLConnection::getConnection();
 $query = "SELECT * FROM parking_cost";

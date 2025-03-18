@@ -2,6 +2,12 @@
 session_start();
 require_once "db_connect.php"; // Ensure the correct database connection file is included
 
+// ✅ Check if the admin is logged in
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header("Location: Administrator.php?AccessDenied");
+    exit();
+}
+
 $conn = SQLConnection::getConnection(); // Get the database connection
 
 // Approve user functionality
@@ -81,9 +87,9 @@ if (isset($_GET['approve_id'])) {
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <a href="AdminHome.php" class="nav-item nav-link">Home</a>
-                <a href="UserDetails.php" class="nav-item nav-link">User Details</a>
+                <a href="UserDetails.php" class="nav-item nav-link active">User Details</a>
                 <a href="ParkingCost.php" class="nav-item nav-link">Parking Cost</a>
-                <a href="Bookings.php" class="nav-item nav-link active">Bookings</a>
+                <a href="Bookings.php" class="nav-item nav-link">Bookings</a>
                 <a href="ParkingLogs1.php" class="nav-item nav-link">Parking Logs</a>
                 <a href="logout.php" class="nav-item nav-link">Logout</a>
             </div>

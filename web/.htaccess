@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# Allow access only if the admin is logged in
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{THE_REQUEST} "^(GET|POST)\s+/.*(UserDetails|ParkingCost|Bookings|ParkingLogs1)\.php" [NC]
+    RewriteCond %{HTTP_COOKIE} !admin_logged_in=true [NC]
+    RewriteRule ^ - [F,L]
+</IfModule>
+

@@ -5,6 +5,13 @@ ini_set('display_errors', 1);
 
 require_once "db_connect.php"; // Ensure database connection
 
+// Ensure user is logged in
+if (!isset($_SESSION['uid'])) {
+    die("Access denied. Please login first.");
+}
+
+$uid = $_SESSION['uid'];
+
 try {
     $conn = SQLConnection::getConnection(); // Get PDO connection
 

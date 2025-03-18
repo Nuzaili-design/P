@@ -1,17 +1,28 @@
 <?php
 session_start();
 
+// If admin is already logged in, redirect to AdminHome.php
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    header("Location: AdminHome.php");
+    exit();
+}
+
 // Show error message if login fails
 if (isset($_GET['Failed'])) {
-    echo "<script>alert('Incorrect ID and password');</script>";
+    echo "<script>alert('❌ Incorrect ID or Password');</script>";
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'] ?? '';
-    $pass = $_POST['pass'] ?? '';
+    $name = trim($_POST['name'] ?? '');
+    $pass = trim($_POST['pass'] ?? '');
 
-    if ($name === "Admin" && $pass === "Admin") {
+    // Secure admin login credentials
+    $admin_username = "Admin";
+    $admin_password = "Admin"; // Consider hashing this password in a real system
+
+    if ($name === $admin_username && $pass === $admin_password) {
         $_SESSION['admin_logged_in'] = true;
+        setcookie("admin_logged_in", "true", time() + 3600, "/"); // Cookie for .htaccess validation
         header("Location: AdminHome.php");
         exit();
     } else {
@@ -20,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

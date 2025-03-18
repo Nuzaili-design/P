@@ -4,6 +4,13 @@ include 'db_connect.php'; // Include your database connection file
 
 $conn = SQLConnection::getConnection();
 
+// Ensure user is logged in
+if (!isset($_SESSION['uid'])) {
+    die("Access denied. Please login first.");
+}
+
+$uid = $_SESSION['uid']; 
+
 // Display messages based on GET parameters
 if (isset($_GET['Slot_booked'])) {
     echo "<script>alert('Slot Booked');</script>";
