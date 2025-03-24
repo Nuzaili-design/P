@@ -11,12 +11,12 @@ include("db_connect.php"); // Include the connection file
 // Get the connection from the class
 $conn = SQLConnection::getConnection(); // Assign connection to $conn
 
-if (!isset($_SESSION["uid"])) {
-    header("Location: Users.php"); // Redirect to login page
-    exit();
+// Ensure user is logged in
+if (!isset($_SESSION['uid'])) {
+    die("Access denied. Please login first.");
 }
+$uid = $_SESSION['uid'];
 
-$uid = $_SESSION["uid"];
 
 try {
     // Prepare and execute query safely

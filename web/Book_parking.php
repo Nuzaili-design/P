@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <select name="stime" class="form-control" required>
                     <option value="">--Select Time--</option>
                     <?php 
-                    for ($i = 6; $i <= 18; $i++) { 
+                    for ($i = 000; $i <= 23; $i++) { 
                         $selected = (isset($_SESSION['selected_time']) && $_SESSION['selected_time'] == "{$i}:00") ? "selected" : "";
                         echo "<option value='{$i}:00' $selected>{$i}:00</option>"; 
                     } 

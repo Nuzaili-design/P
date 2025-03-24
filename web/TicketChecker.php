@@ -1,12 +1,37 @@
 <?php
-// Start the session to handle login and alerts
 session_start();
 
-// Check for any login failure alert
+// If Ticket Checker is already logged in, redirect to TicketCheckerHome.php
+if (isset($_SESSION['ticket_checker_logged_in']) && $_SESSION['ticket_checker_logged_in'] === true) {
+    header("Location: TCHome.php");
+    exit();
+}
+
+// Show error message if login fails
 if (isset($_GET['Failed'])) {
-    echo "<script>alert('Incorrect id and password');</script>";
+    echo "<script>alert('❌ Incorrect ID or Password');</script>";
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = trim($_POST['name'] ?? '');
+    $pass = trim($_POST['pass'] ?? '');
+
+    // Secure Ticket Checker login credentials
+    $checker_username = "Ticket";
+    $checker_password = "Ticket"; // Consider hashing this password in a real system
+
+    if ($name === $checker_username && $pass === $checker_password) {
+        $_SESSION['ticket_checker_logged_in'] = true;
+        setcookie("ticket_checker_logged_in", "true", time() + 3600, "/"); // Cookie for .htaccess validation
+        header("Location: TCHome.php");
+        exit();
+    } else {
+        header("Location: TicketChecker.php?Failed");
+        exit();
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,7 +118,7 @@ if (isset($_GET['Failed'])) {
                 <center>
                     <div class="col-md-6">
                         <div class="wow fadeInUp" data-wow-delay="0.2s">
-                            <form action="TCHome.php" method="post">
+                            <form action="" method="post">
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <div class="form-floating">

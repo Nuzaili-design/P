@@ -1,7 +1,14 @@
 <?php
+session_start();
 require $_SERVER['DOCUMENT_ROOT'] . '/QRBasedVehicleParking/web/db_connect.php';
 
-// Check if codevalue is received from the QR scan
+// ✅ Ensure the Ticket Checker is logged in
+if (!isset($_SESSION['ticket_checker_logged_in']) || $_SESSION['ticket_checker_logged_in'] !== true) {
+    header("Location: TicketChecker.php?AccessDenied"); // Redirect to login page if not logged in
+    exit();
+}
+
+// Check if codeval is received from the QR scan
 if (isset($_GET['codeval'])) {
     $codeval = $_GET['codeval'];
 
@@ -18,7 +25,7 @@ if (isset($_GET['codeval'])) {
             exit();
         }
 
-        // Redirect to verifyTicket.php with codevalue
+        // Redirect to verifyTicket.php with codeval
         header("Location: verifyTicket.php?codeval=" . urlencode($codeval));
         exit();
 

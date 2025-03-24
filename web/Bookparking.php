@@ -10,9 +10,23 @@ if (!isset($_SESSION['uid'])) {
     die("Access denied. Please login first.");
 }
 
-$uid = $_SESSION['uid']; 
+$uid = $_SESSION['uid'];
 
-// Fetch parking cost details from the database
+// Fetch user details from user_reg
+$user_query = "SELECT name, email FROM user_reg WHERE id = :uid";
+$user_stmt = $conn->prepare($user_query);
+$user_stmt->bindParam(':uid', $uid);
+$user_stmt->execute();
+$user = $user_stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    die("User not found!");
+}
+
+$uname = $user['name'];
+$umail = $user['email'];
+
+// Fetch parking cost details
 $cost_query = "SELECT * FROM parking_cost";
 $cost_result = $conn->query($cost_query);
 $costs = [];
@@ -48,20 +62,18 @@ $stmt->bindParam(':endtime', $endtime);
 $stmt->execute();
 $booked_slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-$success = false; // ✅ Track if booking was successful
+$success = false;
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $selected_slots = $_POST['Slot'] ?? [];
-    $uname = htmlspecialchars($_POST['uname'] ?? '');
-    $umail = htmlspecialchars($_POST['umail'] ?? '');
     $pdate = $_POST['pdate'] ?? $selected_date;
     $stime = date("H:i:s", strtotime($_POST['stime']));
     $phrs = $_POST['phrs'] ?? 0;
     $endtime = date("H:i:s", strtotime("+$phrs hours", strtotime($stime)));
 
     foreach ($selected_slots as $slot) {
-        // Check if slot is already booked for overlapping time
+        // Check slot availability
         $checkQuery = "SELECT COUNT(*) FROM slot_booking 
                        WHERE slot_name = :slot_name 
                        AND pdate = :pdate 
@@ -80,23 +92,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             continue;
         }
 
-        // Insert into database
+        // Insert booking with auto-populated user details
         $insert_query = $conn->prepare("
             INSERT INTO slot_booking (uname, uid, pdate, stime, phrs, umail, slot_name, time, endtime, pcost, ustatus)
-            VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, :time, :endtime, :pcost, 'No')
+            VALUES (:uname, :uid, :pdate, :stime, :phrs, :umail, :slot_name, NOW(), :endtime, :pcost, 'No')
         ");
 
-        $insert_query->bindParam(':uname', $uname);
-        $insert_query->bindParam(':uid', $uid);
-        $insert_query->bindParam(':pdate', $pdate);
-        $insert_query->bindParam(':stime', $stime);
-        $insert_query->bindParam(':phrs', $phrs);
-        $insert_query->bindParam(':umail', $umail);
-        $insert_query->bindParam(':slot_name', $slot);
-        $insert_query->bindParam(':time', $time);
-        $insert_query->bindParam(':endtime', $endtime);
-        $insert_query->bindParam(':pcost', $parking_cost);
-        $insert_query->execute();
+        $insert_query->execute([
+            ':uname' => $uname,
+            ':uid' => $uid,
+            ':pdate' => $pdate,
+            ':stime' => $stime,
+            ':phrs' => $phrs,
+            ':umail' => $umail,
+            ':slot_name' => $slot,
+            ':endtime' => $endtime,
+            ':pcost' => $parking_cost
+        ]);
         $success = true;
     }
 
@@ -104,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['success_message'] = "Slots booked successfully!";
     }
 
-    header("Location: " . $_SERVER['PHP_SELF']); // ✅ Reload to execute JavaScript alert
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
 ?>
@@ -119,75 +131,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <div class="container mt-5">
-        <form method="POST" action="">
 
-            <div class="form-group">
-                <label for="uname">User Name:</label>
-                <input type="text" class="form-control" id="uname" name="uname" required>
-            </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <!-- ... keep your existing navbar code ... -->
+</nav>
 
-            <div class="form-group">
-                <label for="umail">User Email:</label>
-                <input type="email" class="form-control" id="umail" name="umail" required>
-            </div>
+<div class="container mt-5">
+    <form method="POST" action="">
 
-            <div class="form-group">
-                <label>Selected Date:</label>
-                <input type="date" class="form-control" name="pdate" value="<?php echo $selected_date; ?>" readonly required min="<?php echo date('Y-m-d'); ?>">
-            </div>
+        <div class="form-group">
+            <label>Selected Date:</label>
+            <input type="date" class="form-control" name="pdate" value="<?php echo $selected_date; ?>" readonly required min="<?php echo date('Y-m-d'); ?>">
+        </div>
 
-            <div class="form-group">
-                <label>Selected Start Time:</label>
-                <input type="text" class="form-control" name="stime" value="<?php echo $selected_time; ?>" readonly>
-            </div>
+        <div class="form-group">
+            <label>Selected Start Time:</label>
+            <input type="text" class="form-control" name="stime" value="<?php echo $selected_time; ?>" readonly>
+        </div>
 
-            <div class="form-group">
-                <label>Parking Hours:</label>
-                <input type="text" class="form-control" name="phrs" value="<?php echo $selected_hours; ?>" readonly>
-            </div>
+        <div class="form-group">
+            <label>Parking Hours:</label>
+            <input type="text" class="form-control" name="phrs" value="<?php echo $selected_hours; ?>" readonly>
+        </div>
 
-            <div class="form-group">
-                <label>Parking Cost (in Turkish lire):</label>
-                <input type="text" class="form-control" value="<?php echo $parking_cost; ?>" readonly>
-            </div>
+        <div class="form-group">
+            <label>Parking Cost (in Turkish lire):</label>
+            <input type="text" class="form-control" value="<?php echo $parking_cost; ?>" readonly>
+        </div>
 
-            <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th>Slot</th>
-                        <?php for ($i = 1; $i <= 10; $i++) { echo "<th>Slot $i</th>"; } ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="color: black;">A</td>
-                        <?php
-                        for ($i = 1; $i <= 10; $i++) {
-                            $slot = "Slot $i";
-                            echo '<td>
-                                    <input type="checkbox" class="slectOne" name="Slot[]" value="' . $slot . '" ' . (in_array($slot, $booked_slots) ? 'disabled' : '') . '>
-                                  </td>';
-                        }
-                        ?>
-                    </tr>
-                </tbody>
-            </table>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Slot</th>
+                    <?php for ($i = 1; $i <= 10; $i++) { echo "<th>Slot $i</th>"; } ?>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="color: black;">A</td>
+                    <?php for ($i = 1; $i <= 10; $i++) {
+                        $slot = "Slot $i";
+                        echo '<td>
+                                <input type="checkbox" class="slectOne" name="Slot[]" value="' . $slot . '" ' . (in_array($slot, $booked_slots) ? 'disabled' : '') . '>
+                              </td>';
+                    } ?>
+                </tr>
+            </tbody>
+        </table>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-md">Book</button>
-            </div>
-        </form>
-    </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-md">Book</button>
+        </div>
+    </form>
+</div>
 
-    <script>
-        <?php if (isset($_SESSION['success_message'])): ?>
-            Swal.fire('Success!', '<?php echo $_SESSION["success_message"]; ?>', 'success').then(() => {
-                window.location.href = 'your_bookings.php'; 
-            });
-            <?php unset($_SESSION['success_message']); endif; ?>
-    </script>
+<script>
+    <?php if (isset($_SESSION['success_message'])): ?>
+        Swal.fire('Success!', '<?php echo $_SESSION["success_message"]; ?>', 'success').then(() => {
+            window.location.href = 'your_bookings.php'; 
+        });
+        <?php unset($_SESSION['success_message']); endif; ?>
+</script>
 
 </body>
 </html>
-

@@ -1,7 +1,14 @@
 <?php
+session_start();
 require 'db_connect.php'; // Ensure database connection
 
 $conn = SQLConnection::getConnection();
+
+// ✅ Ensure the Ticket Checker is logged in
+if (!isset($_SESSION['ticket_checker_logged_in']) || $_SESSION['ticket_checker_logged_in'] !== true) {
+    header("Location: TicketChecker.php?AccessDenied"); // Redirect to login page if not logged in
+    exit();
+}
 
 // Handle alert messages
 if (isset($_GET['Failed'])) {
@@ -10,6 +17,11 @@ if (isset($_GET['Failed'])) {
 if (isset($_GET['AlreadyUsed'])) {
     echo "<script>alert('⚠️ Ticket Already Used Or Expired');</script>";
 }
+
+// if (isset($_GET['NotValidTime'])) {
+   // echo "<script>alert('⚠️ NOT VALID TIME');</script>";
+//}
+
 if (isset($_GET['Invalid'])) {
     echo "<script>alert('❌ Invalid Ticket');</script>";
 }

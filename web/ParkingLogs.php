@@ -1,6 +1,14 @@
 <?php
+session_start();
 // Include the connection file
 include('db_connect.php');
+
+// ✅ Ensure the Ticket Checker is logged in
+if (!isset($_SESSION['ticket_checker_logged_in']) || $_SESSION['ticket_checker_logged_in'] !== true) {
+    header("Location: TicketChecker.php?AccessDenied"); // Redirect to login page if not logged in
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>

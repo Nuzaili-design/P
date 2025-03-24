@@ -116,7 +116,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         <div class="col-12">
                             <div class="form-floating">
-                                <input type="email" class="form-control" id="email" required name="email" placeholder="Email">
+                                <input type="email" class="form-control" id="email"  name="email" placeholder="Email"required 
+                                  pattern="^[^@]+@[^@]+\.[^@]+$"
+                                title="Please enter a valid email address (e.g. example@domain.com)">
                                 <label for="email">Email</label>
                             </div>
                         </div>
