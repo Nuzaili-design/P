@@ -129,15 +129,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>QR Code-based Smart Vehicle Parking</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+   
+
+    <!-- Template Stylesheet -->
+    <style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .booking-box {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control, .btn {
+        border-radius: 8px;
+    }
+
+    
+</style>
+
+    
+   
+   
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-    <!-- ... keep your existing navbar code ... -->
-</nav>
+    
 
-<div class="container mt-5">
+
+<div class="booking-box">
+<h3 class="text-center">Confirm Your Booking</h3>
     <form method="POST" action="">
 
         <div class="form-group">
@@ -159,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label>Parking Cost (in Turkish lire):</label>
             <input type="text" class="form-control" value="<?php echo $parking_cost; ?>" readonly>
         </div>
-
+        <h5 class="mt-4 text-center">Select Your Slot</h5>
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
@@ -180,8 +213,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </tbody>
         </table>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-md">Book</button>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-md">Book Now</button>
         </div>
     </form>
 </div>
@@ -193,6 +226,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
         <?php unset($_SESSION['success_message']); endif; ?>
 </script>
+
+
+
 
 </body>
 </html>
