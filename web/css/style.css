@@ -1,10 +1,10 @@
 /********** Template CSS **********/
-:root {
-    --primary: #D81324;
-    --secondary: #0B2154;
-    --light: #F2F2F2;
-    --dark: #111111;
-}
+.text-primary {
+    background: linear-gradient(135deg, #007bff, #4a00e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
 
 .fw-medium {
     font-weight: 600 !important;
@@ -41,10 +41,32 @@
     transition: .5s;
 }
 
-.btn.btn-primary,
-.btn.btn-secondary {
+/*** Gradient Primary Button ***/
+.btn.btn-primary {
+    background: linear-gradient(135deg, #007bff, #4a00e0);
+    border: none;
     color: #FFFFFF;
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: 0.5s;
+   
 }
+/* Ensure the button has the same focus effect as inputs */
+.btn.btn-primary:focus, 
+.btn.btn-primary:active:focus {
+    border-color: #4a00e0 !important; /* Blue border when focused */
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25) !important; /* Subtle glow effect */
+    outline: none !important; /* Remove the default outline */
+}
+
+
+.btn.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #3a00b0); /* optional darker hover */
+    color: #ffffff;
+    
+}
+
+
 
 .btn-square {
     width: 38px;
@@ -72,6 +94,40 @@
     border-radius: 2px;
 }
 
+.btn-outline-gradient {
+    color: #007bff; /* fallback text color */
+    border: 2px solid;
+    border-image: linear-gradient(135deg, #007bff, #4a00e0);
+    border-image-slice: 1;
+    background-color: transparent;
+    transition: all 0.7s ease;
+    box-shadow: none;
+}
+
+.btn-outline-gradient:hover {
+    background: linear-gradient(135deg, #007bff, #4a00e0);
+    color: #fff;
+    border: 2px solid transparent;
+    
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* soft shadow */
+}
+
+.link-gradient {
+    background: linear-gradient(135deg, #007bff, #4a00e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.link-gradient:hover {
+    background: linear-gradient(135deg, #0056b3, #3a00b0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: underline;
+}
+
 
 /*** Navbar ***/
 .navbar .dropdown-toggle::after {
@@ -86,15 +142,23 @@
 .navbar-light .navbar-nav .nav-link {
     margin-right: 30px;
     padding: 25px 0;
-    color: #FFFFFF;
     font-size: 15px;
     text-transform: uppercase;
     outline: none;
+    font-weight: 500;
+    
+    /* Gradient text */
+    background: linear-gradient(135deg, #007bff, #4a00e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: 0.3s ease;
 }
 
 .navbar-light .navbar-nav .nav-link:hover,
 .navbar-light .navbar-nav .nav-link.active {
-    color: var(--primary);
+    background: linear-gradient(135deg, #0056b3, #3a00b0); /* hover/darker */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 @media (max-width: 991.98px) {
@@ -113,14 +177,15 @@
     height: 75px;
 }
 
-.navbar-light .navbar-nav .nav-link {
-    color: var(--dark);
-    font-weight: 500;
+/* ✅ Keep navbar background white */
+.navbar-light {
+    background-color: #ffffff !important;
 }
 
 .navbar-light.sticky-top {
     top: -100px;
     transition: .5s;
+    background-color: #ffffff !important;
 }
 
 @media (min-width: 992px) {
@@ -142,7 +207,6 @@
     }
 }
 
-
 /*** Header ***/
 .carousel-caption {
    top: 0;
@@ -154,6 +218,7 @@
     z-index: 1;
     opacity: 0; /* Start with the caption hidden */
     transition: opacity 0.5s ease-in-out; /* Smooth fade-in effect */
+    
 }
 
 .carousel-control-prev,
@@ -243,7 +308,7 @@
 
 /*** Facts ***/
 .fact {
-    background: linear-gradient(rgba(0, 0, 0, .7), rgba(0, 0, 0, .7)), url(../img/carousel-bg-1.jpg);
+    background: linear-gradient(rgba(0, 0, 0, .7), rgba(0, 0, 0, .7)), url(../web/img/ai.png);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -362,9 +427,13 @@
 
 /*** Footer ***/
 .footer {
-    background: linear-gradient(rgba(0, 0, 0, .9), rgba(0, 0, 0, .9)), url(../img/carousel-bg-1.jpg) center center no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, .9), rgba(0, 0, 0, .9)), url(../img/24_Hours.jpg) ;
     background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+    background-position: center center;
 }
+
 
 .footer .btn.btn-social {
     margin-right: 5px;
@@ -429,3 +498,23 @@
     padding-right: 0;
     border-right: none;
 }
+
+/* Darker style for the booked (disabled) radio buttons */
+.form-check-input.booked-slot {
+    background-color: #71400b; /* Bootstrap's dark color */
+    border-color: #ced2d6;
+    cursor: not-allowed;
+  }
+  .form-check-input.booked-slot:disabled {
+    opacity: 1;
+    pointer-events: none;
+  }
+  .btn.disabled {
+    pointer-events: none;
+    opacity: 1; /* Make sure it's fully visible even when disabled */
+  }
+  .floor-divider {
+    height: 2px;
+    background-color: #dee2e6;
+    border-radius: 1px;
+  }

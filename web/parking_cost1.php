@@ -52,6 +52,13 @@ try {
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+         .form-control:focus {
+    border-color: #4a00e0;
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25); /* subtle gradient glow */
+    outline: none;
+}
+    </style>
 </head>
 <body>
 
@@ -63,18 +70,16 @@ try {
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+            <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="UserHome.php" class="nav-item nav-link">Home</a>
-                <a href="parking_cost.php" class="nav-item nav-link active">Parking Cost</a>
-                <a href="Book_parking.php" class="nav-item nav-link">Book Parking Slot</a>
-                <a href="your_bookings.php" class="nav-item nav-link">Your Bookings</a>
-                <a href="logout.php" class="nav-item nav-link">Logout</a>
+                <a href="UserHome.php" class="nav-item nav-link"><i class="fas fa-home me-1"></i>Home</a>
+                <a href="parking_cost.php" class="nav-item nav-link active"><i class="fas fa-coins me-2"></i>Parking Cost</a>
+                <a href="logout.php?type=user" class="nav-item nav-link"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
             </div>
         </div>
     </nav>
@@ -89,47 +94,28 @@ try {
     </div>
     -->
 
-    <!-- Call To Action Start -->
-    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-8 col-md-6">
-                    <h6 class="text-primary text-uppercase">// Booking //</h6>
-                    <h1 class="mb-4">Slot Booking Cost</h1>
-                    <br><br><br><br>
-                    <p class="mb-0"></p>
-                </div>
-                <center>
-                    <div class="col-lg-8 col-md-12">
-                        <div class="bg-primary d-flex flex-column justify-content-center text-center h-100 p-4">
-                            <h3 class="text-white mb-4"><i class="fa fa-clock me-3"></i>Ticket Cost Per Hour</h3>
-                            <a href="" class="btn btn-secondary py-3 px-5">TL. <?= htmlspecialchars($parking['cost']) ?></a>
-                        </div>
-                    </div>
-                </center>
-            </div>
+   <!-- Parking Cost Display Start -->
+<div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="text-center mb-5">
+            <i class="fas fa-coins fa-3x text-primary mb-3"></i>
+            <h3 class="text-primary text-uppercase">Current Parking Rate</h3>
+            <p class="fs-5 text-muted">This is the hourly rate set by the administrator</p>
         </div>
-    </div>
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5"></div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
-                    </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.2s">
+                <div class="card shadow-lg border-0 p-4 rounded-4 text-center">
+                    <label class="form-label fw-semibold mb-2">Parking Cost (TL per hour)</label>
+                    <input type="text" class="form-control text-center fw-bold fs-5" value="TL. <?= htmlspecialchars($parking['cost']) ?>" readonly>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<!-- Parking Cost Display End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
+    
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

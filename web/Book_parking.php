@@ -81,6 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .form-control, .btn {
             border-radius: 8px;
         }
+        .form-control:focus {
+    border-color: #4a00e0;
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25); /* subtle gradient glow */
+    outline: none;
+}
         select.form-control {
             height: 40px;
             font-size: 14px;
@@ -99,18 +104,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
  <!-- Navbar -->
  <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+            <h2 class="m-0 text-primary"><i class="fa fa-calendar-check me-3"></i>Car Reservation System</h2>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="UserHome.php" class="nav-item nav-link">Home</a>
-                <a href="parking_cost1.php" class="nav-item nav-link">Parking Cost</a>
-                <a href="Book_parking.php" class="nav-item nav-link active">Book Parking Slot</a>
-                <a href="your_bookings.php" class="nav-item nav-link">Your Bookings</a>
-                <a href="logout.php" class="nav-item nav-link">Logout</a>
+                <a href="UserHome.php" class="nav-item nav-link"><i class="fas fa-home me-1"></i>Home</a>
+                <a href="Book_parking.php" class="nav-item nav-link active"><i class="fa fa-calendar-check me-3"></i>Book Parking Slot</a>
+                <a href="logout.php?type=user" class="nav-item nav-link"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
             </div>
         </div>
     </nav>

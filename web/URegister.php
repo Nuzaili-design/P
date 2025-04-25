@@ -9,7 +9,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gender = $_POST["gender"];
     $phone = $_POST["phone"];
     $address = trim($_POST["address"]);
-    $password = password_hash($_POST["pass"], PASSWORD_BCRYPT); // Secure password hashing
+    $rawPassword = $_POST["pass"];
+
+    // Password validation (min 6 characters, at least 1 uppercase, 1 lowercase, 1 number, 1 special char)
+    if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $rawPassword)) {
+        $_SESSION['error_message'] = "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.";
+        header("Location: URegister.php");
+        exit();
+    }
+
+    $password = password_hash($rawPassword, PASSWORD_BCRYPT); // Secure password hashing
 
     try {
         $conn = SQLConnection::getConnection(); // Get PDO connection
@@ -53,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +80,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+
+body {
+            background-color: #f8f9fa;
+        }
+        .col-md-6 {
+            max-width: 500px;
+            margin: 10px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control, .btn {
+            border-radius: 8px;
+        }
+        .form-control:focus {
+    border-color: #4a00e0;
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25); /* subtle gradient glow */
+    outline: none;
+}
+   
+</style>
   
 </head>
 <body>
@@ -83,17 +117,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Navbar Start -->
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-        <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+        <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
     </a>
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link active">Home</a>
-            <a href="Administrator.php" class="nav-item nav-link">Administrator</a>
-            <a href="TicketChecker.php" class="nav-item nav-link">Ticket Checker</a>
-            <a href="Users.php" class="nav-item nav-link">Users</a>
+            <a href="index.php" class="nav-item nav-link"><i class="fas fa-home me-1"></i>Home</a>
+            <a href="Administrator.php" class="nav-item nav-link"><i class="fas fa-user-shield me-1"></i>Administrator</a>
+            <a href="TicketChecker.php" class="nav-item nav-link"><i class="fas fa-qrcode me-1"></i>Ticket Checker</a>
+            <a href="Users.php" class="nav-item nav-link active"><i class="fas fa-users me-1"></i>Users</a>
         </div>
     </div>
 </nav>
@@ -149,18 +183,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="form-floating">
-                                <input type="password" class="form-control" id="pass" required name="pass" placeholder="Password">
-                                <label for="pass">Password</label>
-                            </div>
-                        </div>
+    <div class="form-floating position-relative">
+        <input type="password" class="form-control" id="pass" required name="pass" placeholder="Password"
+         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$"
+         title="Password must be at least 6 characters long and include uppercase, lowercase, a number, and a special character.">
+        <label for="pass">Password</label>
+        <i class="fas fa-eye position-absolute" id="togglePassword"
+           style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
+    </div>
+</div>
+
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary w-100 py-3">Register</button>
                         </div>
                     </div>
                 </form>
                 <div class="text-center mt-3">
-                    <a href="Users.php" class="btn btn-link">Already have an account? Login here</a>
+                    <a href="Users.php" class="link-gradient">Already have an account? Login here</a>
                 </div>
             </div>
         </div>
@@ -204,5 +243,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php unset($_SESSION['error_message']); ?>
         <?php endif; ?>
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordField = document.querySelector('#pass');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    });
+</script>
+
 </body>
 </html>

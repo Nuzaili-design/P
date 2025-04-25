@@ -48,6 +48,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+<style>
+    body {
+            background-color: #f8f9fa;
+        }
+        .col-md-6 {
+            max-width: 500px;
+            margin: 10px auto;
+            background: #fff;
+            padding: 50px;
+            border-radius: 10px;
+            
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control, .btn {
+            border-radius: 8px;
+        }
+        .form-control:focus {
+    border-color: #4a00e0;
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25); /* subtle gradient glow */
+    outline: none;
+}
+
+
+
+        </style>
 </head>
 <body>
     <!-- Spinner Start -->
@@ -60,17 +85,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-        <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+        <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
     </a>
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="index.php" class="nav-item nav-link active">Home</a>
-            <a href="Administrator.php" class="nav-item nav-link">Administrator</a>
-            <a href="TicketChecker.php" class="nav-item nav-link">Ticket Checker</a>
-            <a href="Users.php" class="nav-item nav-link">Users</a>
+            <a href="index.php" class="nav-item nav-link"><i class="fas fa-home me-1"></i>Home</a>
+            <a href="Administrator.php" class="nav-item nav-link active"><i class="fas fa-user-shield me-1"></i>Administrator</a>
+            <a href="TicketChecker.php" class="nav-item nav-link"><i class="fas fa-qrcode me-1"></i>Ticket Checker</a>
+            <a href="Users.php" class="nav-item nav-link"><i class="fas fa-users me-1"></i>Users</a>
         </div>
     </div>
 </nav>
@@ -78,16 +103,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Login Form Start -->
 <div class="container-xxl py-5">
-    <br><br><br>
+    
     <div class="container">
-        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h6 class="text-primary text-uppercase">// Administrator //</h6>
-            <h1 class="mb-5">Administrator Login</h1>
-        </div>
-        <div class="row g-4">
+        
+        <div class="row g-3">
             <center>
                 <div class="col-md-6">
-                    <div class="wow fadeInUp" data-wow-delay="0.2s">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            
+            <h1 class="mb-3">Sign In</h1>
+        </div>
+                    <div class="wow fadeInUp" data-wow-delay="0.3s">
                         <form action="" method="post">
                             <div class="row g-3">
                                 <div class="col-12">
@@ -111,36 +137,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </center>
         </div>
-        <br><br><br><br><br>
+        
     </div>
 </div>
 <!-- Login Form End -->
 
-<!-- Footer Start -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container py-5">
-        <div class="row g-5">
-            <div class="col-lg-3 col-md-6"></div>
-            <div class="col-lg-3 col-md-6"></div>
-            <div class="col-lg-3 col-md-6"></div>
-            <div class="col-lg-3 col-md-6"></div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="copyright">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
-                </div>
-                <div class="col-md-6 text-center text-md-end"></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Footer End -->
-
-<!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

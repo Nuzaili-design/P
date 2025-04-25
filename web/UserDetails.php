@@ -44,6 +44,121 @@ if (isset($_GET['approve_id'])) {
     <link href="css/style.css" rel="stylesheet">
     <link href="css/table.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+                 #naresh {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Header Styling */
+#naresh th {
+  background: linear-gradient(135deg, #007bff, #4a00e0);
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 16px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  text-align: left;
+}
+
+/* Header subtle shine effect */
+#naresh th::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 70%;
+  height: 100%;
+  background: radial-gradient(rgba(255, 255, 255, 0.08), transparent);
+  transform: translateX(-50%);
+}
+
+/* Data Cell Styling */
+#naresh td {
+  padding: 14px 16px;
+  font-size: 15px;
+  color: #333;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* Zebra Striping */
+#naresh tr:nth-child(even) td {
+  background-color: #f9f9f9;
+}
+
+/* Hover Effect */
+#naresh tr:hover td {
+  background-color: #f0f8ff;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 9999px rgba(0, 123, 255, 0.03);
+}
+
+/* Responsive Tweaks */
+@media screen and (max-width: 768px) {
+  #naresh th,
+  #naresh td {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #naresh thead {
+    display: none;
+  }
+
+  #naresh, #naresh tbody, #naresh tr, #naresh td {
+    display: block;
+    width: 100%;
+  }
+
+  #naresh tr {
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.05);
+    background: #ffffff;
+    padding: 12px;
+  }
+
+  #naresh td {
+    padding: 12px 16px 12px 50%;
+    position: relative;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    background: transparent;
+  }
+
+  #naresh td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    font-weight: 600;
+    color: #007bff;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+}
+   
+         
+         .form-control:focus {
+    border-color: #4a00e0;
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25); /* subtle gradient glow */
+    outline: none;
+}
+    </style>
 </head>
 
 <body>
@@ -79,19 +194,17 @@ if (isset($_GET['approve_id'])) {
  <!-- Navbar Start -->
  <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+            <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="AdminHome.php" class="nav-item nav-link">Home</a>
-                <a href="UserDetails.php" class="nav-item nav-link active">User Details</a>
-                <a href="ParkingCost.php" class="nav-item nav-link">Parking Cost</a>
-                <a href="Bookings.php" class="nav-item nav-link">Bookings</a>
-                <a href="ParkingLogs1.php" class="nav-item nav-link">Parking Logs</a>
-                <a href="logout.php" class="nav-item nav-link">Logout</a>
+                <a href="AdminHome.php" class="nav-item nav-link"><i class="fas fa-home me-1"></i>Home</a>
+                <a href="UserDetails.php" class="nav-item nav-link active"><i class="fas fa-user me-2"></i>User Details</a>
+                
+                <a href="logout.php?type=admin" class="nav-item nav-link"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
             </div>
         </div>
     </nav>
@@ -100,11 +213,16 @@ if (isset($_GET['approve_id'])) {
     <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h3 class="text-primary text-uppercase">// User Details //</h3>
+                <h3 class="text-secondary text-uppercase">User Details</h3>
+                <br>
+                <div class="text-center mb-4">
+    <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Search parking logs...">
+</div>
             </div>
-            <div class="row g-4">
+            <div class="col-lg-12">
                 <table id="naresh" class="table table-bordered">
-                    <tr>
+                <thead>  
+                <tr>
                         <th>Name</th>
                         <th>Email</th>
                         <th>DOB</th>
@@ -114,19 +232,21 @@ if (isset($_GET['approve_id'])) {
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <?php
                     try {
                         $stmt = $conn->query("SELECT * FROM user_reg");
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "<tr>
-                                    <td>{$row['name']}</td>
-                                    <td>{$row['email']}</td>
-                                    <td>{$row['dob']}</td>
-                                    <td>{$row['address']}</td>
-                                    <td>{$row['gender']}</td>
-                                    <td>{$row['phone']}</td>
-                                    <td>{$row['ustatus']}</td>
-                                    <td>";
+                                    <td data-label='Name'>{$row['name']}</td>
+                                    <td data-label='Email'>{$row['email']}</td>
+                                    <td data-label='DOB'>{$row['dob']}</td>
+                                    <td data-label='Address'>{$row['address']}</td>
+                                    <td data-label='Gender'>{$row['gender']}</td>
+                                    <td data-label='Phone No'>{$row['phone']}</td>
+                                    <td data-label='Status'>{$row['ustatus']}</td>
+                                    <td data-label='Action'>";
                             if ($row['ustatus'] != 'Yes') {
                                 echo "<a href='UserDetails.php?approve_id={$row['id']}' class='btn btn-success btn-sm'>Approve</a>";
                             } else {
@@ -138,32 +258,13 @@ if (isset($_GET['approve_id'])) {
                         echo "<tr><td colspan='9'>Error fetching user details: " . $e->getMessage() . "</td></tr>";
                     }
                     ?>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-     <!-- Footer Start -->
-     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6"></div>
-                <div class="col-lg-3 col-md-6"></div>
-                <div class="col-lg-3 col-md-6"></div>
-                <div class="col-lg-3 col-md-6"></div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                         <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
+     
 
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
@@ -181,6 +282,17 @@ if (isset($_GET['approve_id'])) {
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <script>
+$(document).ready(function(){
+    $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#naresh tbody tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+});
+</script>
 </body>
 </html>
 

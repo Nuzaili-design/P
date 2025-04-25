@@ -46,6 +46,7 @@ if (isset($_GET['Success'])) {
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+   
 </head>
 
 <body>
@@ -57,24 +58,25 @@ if (isset($_GET['Success'])) {
     </div>
     <!-- Spinner End -->
 
-    <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
-        </a>
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="index.php" class="nav-item nav-link active">Home</a>
-                <a href="Administrator.php" class="nav-item nav-link">Administrator</a>
-                <a href="TicketChecker.php" class="nav-item nav-link">Ticket Checker</a>
-                <a href="Users.php" class="nav-item nav-link">Users</a>
-            </div>
+   <!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="index.php" class="nav-item nav-link active "><i class="fas fa-home me-1"></i>Home</a>
+            <a href="Administrator.php" class="nav-item nav-link"><i class="fas fa-user-shield me-1"></i>Administrator</a>
+            <a href="TicketChecker.php" class="nav-item nav-link"><i class="fas fa-qrcode me-1"></i>Ticket Checker</a>
+            <a href="Users.php" class="nav-item nav-link"><i class="fas fa-users me-1 "></i>Users</a>
         </div>
-    </nav>
-    <!-- Navbar End -->
+    </div>
+</nav>
+<!-- Navbar End -->
+
 
     <!-- Carousel Start -->
     <div class="container-fluid p-0 mb-5">
@@ -137,69 +139,106 @@ if (isset($_GET['Success'])) {
 
 
     <!-- Service Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="d-flex py-5 px-4">
-                        <i class="fa fa-certificate fa-3x text-primary flex-shrink-0"></i>
-                        <div class="ps-4">
-                            <h5 class="mb-3">Quality Servicing</h5>
-                            <p></p>
-                        </div>
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Easy Reservation -->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="d-flex py-5 px-4">
+                    <i class="fa fa-calendar-check fa-3x text-primary flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">Quick Slot Booking</h5>
+                        <p>Reserve your parking spot in just a few clicks — fast, easy, and secure.</p>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="d-flex bg-light py-5 px-4">
-                        <i class="fa fa-users-cog fa-3x text-primary flex-shrink-0"></i>
-                        <div class="ps-4">
-                            <h5 class="mb-3">Expert Workers</h5>
-                            <p></p>
-                        </div>
+            </div>
+
+            <!-- Ticket Scanner -->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="d-flex bg-light py-5 px-4">
+                    <i class="fa fa-qrcode fa-3x text-primary flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">Smart Ticket Scanning</h5>
+                        <p>Check your ticket via QR code on arrival for quick and contactless entry.</p>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="d-flex py-5 px-4">
-                        <i class="fa fa-tools fa-3x text-primary flex-shrink-0"></i>
-                        <div class="ps-4">
-                            <h5 class="mb-3">Modern Equipment</h5>
-                            <p></p>
-                        </div>
+            </div>
+
+            <!-- Affordable Pricing -->
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="d-flex py-5 px-4">
+                    <i class="fa fa-tags fa-3x text-primary flex-shrink-0"></i>
+                    <div class="ps-4">
+                        <h5 class="mb-3">Affordable Pricing</h5>
+                        <p>Enjoy competitive rates with transparent pricing — no hidden fees.</p>
                     </div>
                 </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Service End -->
+
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+
+            <!-- About -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">About Us</h5>
+                <p>Our smart vehicle parking system lets you book slots easily, scan tickets on arrival, and save time and money. Simple, secure, and stress-free parking.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">Quick Links</h5>
+                <a class="btn btn-link text-light" href="index.php">Home</a><br>
+                
+                <a class="btn btn-link text-light" href="Users.php">User Login</a>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">Contact Us</h5>
+                <p><i class="fa fa-map-marker-alt me-3"></i> Istanbul, Turkey</p>
+                <p><i class="fa fa-envelope me-3"></i> support@smartparking.com</p>
+                <p><i class="fa fa-phone-alt me-3"></i> +90 538 081 40 62</p>
+            </div>
+
+            <!-- Newsletter / Info -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">Stay Updated</h5>
+                <p>Sign up to get the latest updates on available slots, promotions, and system upgrades.</p>
+                <!-- You can add a newsletter form here if needed -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="container">
+    <div class="copyright">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                <small class="text-light">
+                    &copy; Car Reservation System. All rights reserved.
+                </small>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <small class="text-light">
+                    Developed by: <strong>Abdulaziz Alnuzaili</strong> and <strong>Mohammed Fateh</strong>
+                </small>
             </div>
         </div>
     </div>
-    <!-- Service End -->
+</div>
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                </div>
-                <div class="col-lg-3 col-md-6">
+<!-- Footer End -->
 
-                </div>
-                <div class="col-lg-3 col-md-6">
-                </div>
-                <div class="col-lg-3 col-md-6">
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

@@ -45,6 +45,13 @@ $costs = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+         .form-control:focus {
+    border-color: #4a00e0;
+    box-shadow: 0 0 0 0.15rem rgba(74, 0, 224, 0.25); /* subtle gradient glow */
+    outline: none;
+}
+    </style>
 </head>
 
 <body>
@@ -63,19 +70,18 @@ $costs = $statement->fetchAll(PDO::FETCH_ASSOC);
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+            <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="AdminHome.php" class="nav-item nav-link">Home</a>
-                <a href="UserDetails.php" class="nav-item nav-link">User Details</a>
-                <a href="ParkingCost.php" class="nav-item nav-link active">Parking Cost</a>
-                <a href="Bookings.php" class="nav-item nav-link">Bookings</a>
-                <a href="ParkingLogs1.php" class="nav-item nav-link">Parking Logs</a>
-                <a href="logout.php" class="nav-item nav-link">Logout</a>
+                <a href="AdminHome.php" class="nav-item nav-link"><i class="fas fa-home me-1"></i>Home</a>
+                
+                <a href="ParkingCost.php" class="nav-item nav-link active"><i class="fas fa-coins me-2"></i>Parking Cost</a>
+
+                <a href="logout.php?type=admin" class="nav-item nav-link"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
             </div>
         </div>
     </nav>
@@ -91,66 +97,38 @@ $costs = $statement->fetchAll(PDO::FETCH_ASSOC);
     </div>
     -->
 
-    <!-- Parking Cost Update Start -->
-    <div class="container-xxl py-5">
-        <br><br><br>
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="text-primary text-uppercase">// Parking Cost //</h6>
-                <h1 class="mb-5">You can update the parking cost</h1>
-            </div>
-            <div class="row g-4">
-                <center>
-                    <div class="col-md-6">
-                        <div class="wow fadeInUp" data-wow-delay="0.2s">
-                            <form action="cost_update.php" method="post">
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="subject" required name="pcost" value="<?php echo $costs[0]['cost']; ?>" placeholder="Parking Cost">
-                                            <label for="subject" style="color: black">Parking Cost Per Hour :</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-5">
-                                        <button class="btn btn-primary w-100 py-3" type="submit">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </center>
-            </div>
-            <br><br><br><br><br>
+<!-- Parking Cost Update Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp mb-5" data-wow-delay="0.1s">
+            <i class="fas fa-coins fa-3x text-primary mb-3"></i>
+            <h3 class="text-primary text-uppercase">Parking Cost Management</h3>
+            <p class="fs-5 text-muted">Update the hourly rate for parking with ease</p>
         </div>
-    </div>
-    <!-- Parking Cost Update End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6"></div>
-                <div class="col-lg-3 col-md-6"></div>
-                <div class="col-lg-3 col-md-6"></div>
-                <div class="col-lg-3 col-md-6"></div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
-                    </div>
-                    <div class="col-md-6 text-center text-md-end"></div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.2s">
+                <div class="card shadow-lg p-4 border-0 rounded-4">
+                    <form action="cost_update.php" method="post">
+                        <div class="mb-4">
+                            <label for="subject" class="form-label fw-semibold">Parking Cost Per Hour (TL)</label>
+                            <input type="text" class="form-control" id="subject" required name="pcost"
+                                value="<?php echo $costs[0]['cost']; ?>" placeholder="Parking Cost">
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary py-2" type="submit">Update</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Footer End -->
+</div>
+<!-- Parking Cost Update End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
+
+    
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

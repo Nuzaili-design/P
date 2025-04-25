@@ -6,56 +6,57 @@ $conn = SQLConnection::getConnection();
 
 // ✅ Ensure the Ticket Checker is logged in
 if (!isset($_SESSION['ticket_checker_logged_in']) || $_SESSION['ticket_checker_logged_in'] !== true) {
-    header("Location: TicketChecker.php?AccessDenied"); // Redirect to login page if not logged in
+    header("Location: TicketChecker.php?AccessDenied");
     exit();
 }
 
-// Handle alert messages
-if (isset($_GET['Failed'])) {
-    echo "<script>alert('❌ Incorrect ID or Password');</script>";
-}
-if (isset($_GET['AlreadyUsed'])) {
-    echo "<script>alert('⚠️ Ticket Already Used Or Expired');</script>";
-}
+// ✅ Show alert messages
+if (isset($_GET['Failed'])) echo "<script>alert('❌ Incorrect ID or Password');</script>";
+if (isset($_GET['AlreadyUsed'])) echo "<script>alert('⚠️ Ticket Already Used Or Expired');</script>";
+if (isset($_GET['Invalid'])) echo "<script>alert('❌ Invalid Ticket');</script>";
+if (isset($_GET['Success'])) echo "<script>alert('✅ Login Successful');</script>";
+if (isset($_GET['LogAdded'])) echo "<script>alert('📝 Log Details Added');</script>";
 
-// if (isset($_GET['NotValidTime'])) {
-   // echo "<script>alert('⚠️ NOT VALID TIME');</script>";
-//}
-
-if (isset($_GET['Invalid'])) {
-    echo "<script>alert('❌ Invalid Ticket');</script>";
-}
-if (isset($_GET['Success'])) {
-    echo "<script>alert('✅ Login Successful');</script>";
-}
-if (isset($_GET['LogAdded'])) {
-    echo "<script>alert('📝 Log Details Added');</script>";
-}
-
-// Check if form data is received from verifyTicket.php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeval'], $_POST['uid'], $_POST['uname'], $_POST['slot_name'], $_POST['vnumber'])) {
-    $codeval = htmlspecialchars($_POST['codeval']);
-    $uid = htmlspecialchars($_POST['uid']);
-    $uname = htmlspecialchars($_POST['uname']);
-    $slot_name = htmlspecialchars($_POST['slot_name']);
-    $vnumber = htmlspecialchars($_POST['vnumber']);
+// ✅ Handle form submission from verifyTicket.php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['codeval'], $_POST['uid'], $_POST['uname'], $_POST['slot_name'], $_POST['vnumber'])) {
     
-   
+    $codeval   = htmlspecialchars(trim($_POST['codeval']));
+    $uid       = htmlspecialchars(trim($_POST['uid']));
+    $uname     = htmlspecialchars(trim($_POST['uname']));
+    $slot_name = htmlspecialchars(trim($_POST['slot_name']));
+    $vnumber   = htmlspecialchars(trim($_POST['vnumber']));
 
     try {
-        // Insert log entry into parking_details
-        $stmt = $conn->prepare("INSERT INTO parking_details (vnumber, codeval, uid, uname, slot_name) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$vnumber,$codeval, $uid, $uname, $slot_name]);
+        // 🔍 Check if ticket is already used
+        $checkStmt = $conn->prepare("SELECT COUNT(*) FROM parking_details WHERE codeval = ?");
+        $checkStmt->execute([$codeval]);
+        $alreadyUsed = $checkStmt->fetchColumn();
 
-        header("Location: TCHome.php?LogAdded"); // Redirect with success message
+        if ($alreadyUsed > 0) {
+            header("Location: TCHome.php?AlreadyUsed");
+            exit();
+        }
+
+        // 📝 Insert new parking log
+        $stmt = $conn->prepare("INSERT INTO parking_details (vnumber, codeval, uid, uname, slot_name) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$vnumber, $codeval, $uid, $uname, $slot_name]);
+
+        // Mark ticket as used AFTER vehicle number is submitted
+$stmtUpdate = $conn->prepare("UPDATE slot_booking SET ustatus = 'Yes' WHERE codeval = ?");
+$stmtUpdate->execute([$codeval]);
+
+
+        header("Location: TCHome.php?LogAdded");
         exit();
     } catch (Exception $ex) {
         error_log($ex->getMessage());
-        header("Location: TCHome.php?Error"); // Redirect with error message
+        header("Location: TCHome.php?Error");
         exit();
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -105,17 +106,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeval'], $_POST['ui
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-car me-3"></i>Vehicle Parking</h2>
+            <h2 class="m-0 text-primary"><i class="fas fa-parking me-3"></i>Car Reservation System</h2>
         </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="TCHome.php" class="nav-item nav-link active">Home</a>
-                <a href="CheckParking.php" class="nav-item nav-link">Check Parking Ticket</a>
-                <a href="ParkingLogs.php" class="nav-item nav-link">Parking Logs</a>
-                <a href="logout.php" class="nav-item nav-link">Logout</a>
+                <a href="TCHome.php" class="nav-item nav-link active"><i class="fas fa-home me-1"></i>Home</a>
+                
+                <a href="logout.php?type=ticket" class="nav-item nav-link"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
             </div>
         </div>
     </nav>
@@ -131,52 +131,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codeval'], $_POST['ui
     </div>
      -->
 
-    <!-- Contact Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h3 class="text-primary text-uppercase">// Ticket Checker Home //</h3>
-                <br><br>
+   <!-- Ticket Checker Home Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp mb-5" data-wow-delay="0.1s">
+            <h3 class="text-primary text-uppercase">Ticket Checker Dashboard</h3>
+            <p class="mt-3 fs-5 text-muted">Efficiently scan and verify tickets, and keep track of all parking activity logs.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+            <!-- Check Parking Ticket -->
+            <div class="col-lg-5 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                <div class="bg-light rounded p-4 text-center h-100 shadow-sm hover-shadow">
+                    <i class="fas fa-qrcode fa-3x text-primary mb-3"></i>
+                    <h5 class="mb-3">Check Parking Ticket</h5>
+                    <p>Scan QR codes to validate parking tickets quickly and securely.</p>
+                    <a href="CheckParking.php" class="btn btn-outline-gradient mt-2">Start Scanning</a>
+                </div>
             </div>
-            <div class="row g-4">
-                <img src="img/pexels-jose-espinal-1000633.jpg" class="img-fluid">
+
+            <!-- Parking Logs -->
+            <div class="col-lg-5 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="bg-light rounded p-4 text-center h-100 shadow-sm hover-shadow">
+                    <i class="fas fa-clipboard-list fa-3x text-primary mb-3"></i>
+                    <h5 class="mb-3">Parking Logs</h5>
+                    <p>Access detailed logs of all recent parking entries and exits.</p>
+                    <a href="ParkingLogs.php" class="btn btn-outline-gradient mt-2">View Logs</a>
+                </div>
             </div>
-            <br><br><br><br><br>
+
         </div>
     </div>
-    <!-- Contact End -->
+</div>
+<!-- Ticket Checker Home End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                </div>
-                <div class="col-lg-3 col-md-6">
-                </div>
-                <div class="col-lg-3 col-md-6">
-                </div>
-                <div class="col-lg-3 col-md-6">
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <a class="border-bottom" href="#">QR Code-based Smart Vehicle Parking Management System</a>
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 
     <!-- JavaScript Libraries -->
